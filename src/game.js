@@ -1,7 +1,8 @@
 function Game(){
+  var that = this;
   var candy = new Happening("Some candy is available.", []);
   var new_table = new Happening("You check out a new table.", [], candy)
-  var throwup = new Happening("You throw up.", [], new_table);
+  var throwup = new Happening("You eat some candy and then throw up.", [], new_table);
   candy.choices = [new Choice("Eat some candy", throwup), new Choice("Check out a different table", new_table)];
 
   var state = throwup;
@@ -17,9 +18,9 @@ function Game(){
       state = state.auto;
       return description + build_update();
     } else {
-      description += "<div class='choices'>";
+      description += "<div id='choices'>";
       jQuery.each(state.choices, function(index, choice){
-        description += "<div class='choice'>";
+        description += "<div class='choice' data-index='"+index+"'>";
         description += choice.text;
         description += "</div>";
       });
@@ -27,6 +28,11 @@ function Game(){
     }
     return description;
   }
+
+  jQuery("#description").on("click", ".choice", function(){
+    state = state.choices[jQuery(this).data("index")].target;
+    that.run();
+  });
 }
 
 function Character(){
