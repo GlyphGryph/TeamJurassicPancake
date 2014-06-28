@@ -34,7 +34,9 @@ function Game(){
       description += get_time();
     }
     last_time = time;
-    description = "<div class='phrase'>"+state.description+"</div>"
+    if(state.description){
+      description = "<div class='phrase'>"+state.description+"</div>";
+    }
 
     //Process any effects that occue after the bulk of this happending
     description += handle_effects(state.after);
@@ -114,7 +116,7 @@ function Character(name){
 }
 
 function Happening(scene){
-  this.description = scene["text"] || "I AM ERROR";
+  this.description = scene["text"] || null;
   var choices = [];
   if(scene["choices"]){
     jQuery.each(scene["choices"], function(index, choice){
