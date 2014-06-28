@@ -119,8 +119,10 @@ function Character(name){
     var index_to_delete = this.conditions.findIndex(function(a){return a == condition});
     if(index_to_delete){
       this.conditions = this.conditions.slice(0,index_to_delete).concat(this.conditions.slice(index_to_delete+1))
+      return "<div class='condition'>You are no longer suffering from '"+condition+"'!</div>";
+    } else {
+      return "<div class='error'>ERROR: Attempted to remove a condition that does not exist!</div>";
     }
-    return "<div class='condition'>You are no longer suffering from '"+condition+"'!</div>";
   };
 }
 
