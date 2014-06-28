@@ -1,14 +1,24 @@
 function Game(){
   var that = this;
   var character = new Character("Jake");
-
-  var scenes = load_dummy_scenes();
+  
+  var scenes;
+  real_data = confirm("Load real data?")
+  if(real_data){
+    scenes = load_scenes();
+  } else { 
+    scenes = load_dummy_scenes();
+  }
   var happenings = {};
   jQuery.each(scenes, function(index, scene){
     happenings[scene["id"]] = new Happening(scene);
   });
 
-  var state = happenings["table_choice"];
+  if(real_data){
+    var state = happenings["day_1_intro"];
+  } else { 
+    var state = happenings["table_choice"];
+  }
   var time = 0;
   var last_time = -1;
   var update_text = "";
