@@ -62,6 +62,7 @@ function Character(name){
   this.self_esteem = 5;
   this.comfort = 10;
   this.hygiene = 10;
+  this.conditions = [];
 }
 
 function Happening(options){
