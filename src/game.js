@@ -57,6 +57,11 @@ function Game(){
 function Character(name){
   this.name = name;
   this.health = 0;
+  this.anxiety = 0
+  this.willpower = 5;
+  this.self_esteem = 5;
+  this.comfort = 10;
+  this.hygiene = 10;
 }
 
 function Happening(options){
