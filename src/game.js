@@ -18,7 +18,7 @@ function Game(){
     update_text = build_update();
     character_text = "<span class='name'>"+character.name+"</span>";
     character_text += "<span class='health'>Health: "+character.health+"</span>";
-    character_text += "<span class='time'>Time: "+get_time()+"</span>";
+    character_text += "<span class='time'>Time: "+time+"</span>";
     jQuery("#character").html(character_text);
     jQuery("#description").html(update_text);
   }
@@ -66,13 +66,15 @@ function Game(){
   }
 
   function handle_effects(thing){
+    return "";
   }
 
   function process_conditions(){
+    return "";
   }
 
   function get_time(){
-    return time;
+    return "<div class='timestamp'>"+time+"</div>";
   }
 
   jQuery("#description").on("click", ".choice", function(){
@@ -98,7 +100,7 @@ function Happening(scene){
   var choices = [];
   if(scene["choices"]){
     jQuery.each(scene["choices"], function(index, choice){
-      choices.push(new Choice(choice["text"], choice["target"]));
+      choices.push(new Choice(choice));
     });
   }
   this.choices = choices;
@@ -107,7 +109,7 @@ function Happening(scene){
   this.auto = scene["auto"] || null;
 }
 
-function Choice(text, target){
-  this.text = text;
-  this.target = target;
+function Choice(options){
+  this.text = options["text"];
+  this.target = options["target"];
 }
