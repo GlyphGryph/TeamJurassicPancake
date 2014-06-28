@@ -1,6 +1,7 @@
 function Game(){
   var that = this;
   var character = new Character("Jake");
+  var history = new History();
   
   var scenes;
   real_data = confirm("Load real data?")
@@ -14,13 +15,16 @@ function Game(){
     happenings[scene["id"]] = new Happening(scene);
   });
 
+  var state;
   if(real_data){
-    var state = happenings["day_1_intro"];
+    state = happenings["day_1_intro"];
   } else { 
-    var state = happenings["table_choice"];
+    state = happenings["table_choice"];
   }
-  var time = 0;
-  var last_time = -1;
+  history.add(state);
+
+  var time = new TimeStamp(0);
+  var last_time = new TimeStamp(0);
   var update_text = "";
   var character_text = "";
 
@@ -28,9 +32,13 @@ function Game(){
     update_text = build_update();
     character_text = "<span class='name'>"+character.name+"</span>";
     character_text += "<span class='health'>Health: "+character.health+"</span>";
-    character_text += "<span class='time'>Time: "+time+"</span>";
+    character_text += "<span class='time'>Time: "+time.formatted()+"</span>";
     jQuery("#character").html(character_text);
     jQuery("#description").html(update_text);
+  }
+
+  this.pass_time = function(){
+    alert("time passing");
   }
 
   function build_update(){
@@ -40,8 +48,8 @@ function Game(){
     // In case any of those effects changes the time, process conditions
     description += process_conditions();
 
-    if(time != last_time){
-      description += get_time();
+    if(time.total_hours != last_time.total_hours){
+      description += time_passed();
     }
     last_time = time;
     if(state.description){
@@ -100,14 +108,18 @@ function Game(){
     return "";
   }
 
-  function get_time(){
-    return "<div class='timestamp'>"+(time-last_time)+" hours later...</div>";
+  function time_passed(){
+    return "<div class='timestamp'>"+(time.total_hours-last_time.total_hours)+" hours later...</div>";
   }
 
   jQuery("#description").on("click", ".choice", function(){
     var target_id = state.choices[jQuery(this).data("index")].target;
-    state = happenings[target_id];
-    that.run();
+    if(target_id != "open"){
+      state = happenings[target_id];
+      that.run();
+    } else {
+      that.pass_time();
+    }
   });
 }
 
@@ -153,4 +165,42 @@ function Happening(scene){
 function Choice(options){
   this.text = options["text"];
   this.target = options["target"];
+}
+
+function History(){
+  this.list = [];
+  this.contains = function(value){
+    return jQuery.inArray(value, list);
+  };
+  this.excludes = function(value){
+    return !jQuery.inArray(value, list);
+  };
+  this.add = function(state){
+    this.list.push(state);
+  }
+};
+
+function TimeStamp(hours){
+  this.total_hours = hours;
+  this.day = function(){
+    return Math.floor(this.total_hours/24);
+  };
+  this.hour = function(){
+    return this.total_hours%24;
+  }
+  this.formatted = function(){
+    var stamp = "Day "+this.day()+", "
+    var time_of_day = (this.hour()%12);
+    if(time_of_day == 0){
+      time_of_day = 12;
+    }
+    stamp+=time_of_day+":00";
+    if(this.hour >= 12){
+      stamp+="pm";
+    } else {
+      stamp+="am";
+    }
+
+    return stamp;
+  }
 }
