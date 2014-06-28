@@ -2,21 +2,13 @@ function Game(){
   var that = this;
   var character = new Character("Jake");
 
-  var candy = new Happening({
-    "description": "Some candy is available."
+  var scenes = load_scenes();
+  var happenings = {};
+  jQuery.each(scenes, function(index, scene){
+    happenings[scene["id"]] = new Happening(scene);
   });
-  var new_table = new Happening({
-    "description":"You check out a new table.", 
-    "auto": candy
-  });
-  var throwup = new Happening({
-    "description": "You eat some candy and then throw up.",
-    "effects": {"lose_health": 10},
-    "auto": new_table,
-  });
-  candy.choices = [new Choice("Eat some candy", throwup), new Choice("Check out a different table", new_table)];
 
-  var state = new_table;
+  var state = happenings["day_1_intro"];
   var update_text = "";
   var character_text = "";
 
@@ -49,7 +41,8 @@ function Game(){
   }
 
   jQuery("#description").on("click", ".choice", function(){
-    state = state.choices[jQuery(this).data("index")].target;
+    var target_id = state.choices[jQuery(this).data("index")].target;
+    state = happenings[target_id];
     that.run();
   });
 }
@@ -59,11 +52,17 @@ function Character(name){
   this.health = 0;
 }
 
-function Happening(options){
-  this.description = options["description"] || "I AM ERROR";
-  this.choices = options["choices"] || [];
-  this.effects = options["effects"] || {};
-  this.auto = options["auto"] || null;
+function Happening(scene){
+  this.description = scene["text"] || "I AM ERROR";
+  var choices = [];
+  if(scene["choices"]){
+    jQuery.each(scene["choices"], function(index, choice){
+      choices.push(new Choice(choice["text"], choice["target"]));
+    });
+  }
+  this.choices = choices;
+  this.effects = scene["effects"] || {};
+  this.auto = scene["auto"] || null;
 }
 
 function Choice(text, target){
