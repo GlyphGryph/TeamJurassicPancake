@@ -31,7 +31,7 @@ function load_scenes(){
       "text": "<p>Nah, another day perhaps, after some more practicing. Speaking of which, better do some of that practicing. Paint paint. Looks vaguely like a potato, is actually supposed to be a vase. How does one even do that?</p> <p>Enough practicing for today.</p>",
       "choices": [{
         "text": "[...]",
-        "target": "day_14_store_time"
+        "target": "open"
       }],
     },
     { "type": "open",

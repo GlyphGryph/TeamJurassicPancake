@@ -96,7 +96,7 @@ function Game(){
       } else if(effect.action == "remove_condition"){
         display += character.remove_condition(effect.value);
       } else if(effect.action == "time_passes"){
-        time+=effect.value;
+        time.total_hours+=effect.value;
       } else if(effect.action == "health"){
         character.health+=effect.value;
       }
@@ -195,7 +195,7 @@ function TimeStamp(hours){
       time_of_day = 12;
     }
     stamp+=time_of_day+":00";
-    if(this.hour >= 12){
+    if(this.hour() >= 12){
       stamp+="pm";
     } else {
       stamp+="am";

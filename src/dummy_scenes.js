@@ -1,10 +1,29 @@
 function load_dummy_scenes(){
   return [
+    { "type": "initial",
+      "text": "<p>You go for a walk around the confectionary.</p>",
+      "choices": [
+        { "text": "Explore for a while!",
+          "target": "open",
+        },
+      ]
+    },
+    { "type": "open",
+      "priority": 3,
+      "tickets": function(character, history, timestamp){
+        if(character.ambition > 0 && timestamp.day() == 14 && timestamp.hour() == 10){
+          return 1;
+        }
+        return 0;
+      },
+      "id": "find_table",
+      "text": "<p></p>",
+    },
     { "id": "eat_candy",
       "text": "<p>You eat some candy from the table.</p>",
       "before": [
-        {"action": "health", "value": -10,},
-        {"action": "time_passes", "value": 10,},
+        {"action": "health", "value": -10},
+        {"action": "time_passes", "value": 4},
       ],
       "auto": [
         { "target": "candy_sick",
@@ -30,9 +49,6 @@ function load_dummy_scenes(){
         { "text": "Eat a red one!",
           "target": "eat_candy",
         },
-      ],
-      "before": [
-        {"action": "time_passes", "value": 1,}
       ],
     },
     { "id": "candy_sick",
