@@ -89,7 +89,7 @@ function Game(){
   }
 
   function get_time(){
-    return "<div class='timestamp'>"+time+"</div>";
+    return "<div class='timestamp'>"+(time-last_time)+" hours later...</div>";
   }
 
   jQuery("#description").on("click", ".choice", function(){
