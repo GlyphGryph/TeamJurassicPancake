@@ -111,7 +111,7 @@ function Character(name){
 
   this.add_condition = function(condition){
     this.conditions.push(condition);
-    return "<div>A condition was added!</div>";
+    return "<div class='condition'>You have acquired '"+condition+"'!</div>";
   };
 }
 
