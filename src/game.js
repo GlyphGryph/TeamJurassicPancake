@@ -7,7 +7,7 @@ function Game(){
   var throwup = new Happening("You eat some candy and then throw up.", [], {"lose_health": 10}, new_table);
   candy.choices = [new Choice("Eat some candy", throwup), new Choice("Check out a different table", new_table)];
 
-  var state = throwup;
+  var state = new_table;
   var update_text = "";
   var character_text = "";
 
