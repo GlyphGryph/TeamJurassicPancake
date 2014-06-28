@@ -56,7 +56,7 @@ function Game(){
 
 function Character(name){
   this.name = name;
-  this.health = 10;
+  this.health = 0;
   this.anxiety = 0
   this.willpower = 5;
   this.self_esteem = 5;
