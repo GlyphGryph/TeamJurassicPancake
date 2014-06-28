@@ -75,6 +75,8 @@ function Game(){
       }
       if(effect.action == "add_condition"){
         display += character.add_condition(effect.value);
+      } else if(effect.action == "remove_condition"){
+        display += character.remove_condition(effect.value);
       } else if(effect.action == "time_passes"){
         time+=effect.value;
       } else if(effect.action == "health"){
@@ -112,6 +114,13 @@ function Character(name){
   this.add_condition = function(condition){
     this.conditions.push(condition);
     return "<div class='condition'>You have acquired '"+condition+"'!</div>";
+  };
+  this.remove_condition = function(condition){
+    var index_to_delete = this.conditions.findIndex(function(a){return a == condition});
+    if(index_to_delete){
+      this.conditions = this.conditions.slice(0,index_to_delete).concat(this.conditions.slice(index_to_delete+1))
+    }
+    return "<div class='condition'>You are no longer suffering from '"+condition+"'!</div>";
   };
 }
 
