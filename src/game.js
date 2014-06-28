@@ -1,14 +1,21 @@
 function Game(){
   var that = this;
+  var character = new Character("Jake");
+
   var candy = new Happening("Some candy is available.", []);
   var new_table = new Happening("You check out a new table.", [], candy)
   var throwup = new Happening("You eat some candy and then throw up.", [], new_table);
   candy.choices = [new Choice("Eat some candy", throwup), new Choice("Check out a different table", new_table)];
 
   var state = throwup;
+  var update_text = "";
+  var character_text = "";
 
   this.run = function(){
-    var update_text = build_update();
+    update_text = build_update();
+    character_text = "<span class='name'>"+character.name+"</span>";
+    character_text += "<span class='health'>Health: "+character.health+"</span>";
+    jQuery("#character").html(character_text);
     jQuery("#description").html(update_text);
   }
 
@@ -35,8 +42,8 @@ function Game(){
   });
 }
 
-function Character(){
-  this.name = "Jake";
+function Character(name){
+  this.name = name;
   this.health = 100;
 }
 
