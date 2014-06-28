@@ -75,6 +75,8 @@ function Game(){
         display += character.add_condition(effect.value);
       } else if(effect.action == "time_passes"){
         time+=effect.value;
+      } else if(effect.action == "health"){
+        character.health+=effect.value;
       }
     });
     return display;
