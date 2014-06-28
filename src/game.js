@@ -65,8 +65,19 @@ function Game(){
     return description;
   }
 
-  function handle_effects(thing){
-    return "";
+  function handle_effects(effects){
+    var display = "";
+    jQuery.each(effects, function(index, effect){
+      if(!effect.action){
+        throw("Error: Effect has no action defined.");
+      }
+      if(effect.action == "add_condition"){
+        display += character.add_condition(effect.value);
+      } else if(effect.action == "time_passes"){
+        time+=effect.value;
+      }
+    });
+    return display;
   }
 
   function process_conditions(){
@@ -93,6 +104,11 @@ function Character(name){
   this.comfort = 10;
   this.hygiene = 10;
   this.conditions = [];
+
+  this.add_condition = function(condition){
+    this.conditions.push(condition);
+    return "<div>A condition was added!</div>";
+  };
 }
 
 function Happening(scene){
@@ -104,8 +120,8 @@ function Happening(scene){
     });
   }
   this.choices = choices;
-  this.before = scene["before"] || {};
-  this.after = scene["after"] || {};
+  this.before = scene["before"] || [];
+  this.after = scene["after"] || [];
   this.auto = scene["auto"] || null;
 }
 

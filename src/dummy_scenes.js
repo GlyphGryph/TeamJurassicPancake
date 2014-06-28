@@ -2,10 +2,10 @@ function load_dummy_scenes(){
   return [
     { "id": "eat_candy",
       "text": "<p>You eat some candy from the table.</p>",
-      "effects": {
-        "health": -10,
-        "time_passes": 10,
-      },
+      "before": [
+        {"action": "health", "value": -10,},
+        {"action": "time_passes", "value": 10,},
+      ],
       "auto": [
         { "target": "candy_sick",
           "conditions": function(character){
@@ -31,27 +31,28 @@ function load_dummy_scenes(){
           "target": "eat_candy",
         },
       ],
-      "before": {
-        "time_passes": 1,
-      },
+      "before": [
+        {"action": "time_passes", "value": 1,}
+      ],
     },
     { "id": "candy_sick",
       "text": "<p>Ugggh.... you don't feel so good all of a sudden...</p><p>The world spins, and you clutch the table before collapsing. As you lose consciousness, you hear an ambulance in the distance...</p>",
-      "after": {
-        "add_condition": "nausea",
-        "add_condition": "unconscious",
-      },
+      "after": [
+        { "action": "add_condition", "value": "nausea", },
+        { "action": "add_condition", "value": "unconscious", }
+      ],
+
       "auto": [
         { "target": "ambulance_ride",},
       ],
     },
     { "id": "ambulance_ride",
-      "before": {
-        "time_passes": 400,
-      },
-      "after": {
-        "remove_condition": "unconscious",
-      },
+      "before": [
+        {"action": "time_passes", "value": 400,}
+      ],
+      "after": [
+        {"action": "remove_condition", "value": "unconscious",},
+      ],
       "auto": [
         { "target": "hospital_stay", },
       ],
