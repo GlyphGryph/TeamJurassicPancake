@@ -3,8 +3,8 @@ function Game(){
   var character = new Character("Jake");
 
   var candy = new Happening("Some candy is available.", []);
-  var new_table = new Happening("You check out a new table.", [], candy)
-  var throwup = new Happening("You eat some candy and then throw up.", [], new_table);
+  var new_table = new Happening("You check out a new table.", [], {}, candy)
+  var throwup = new Happening("You eat some candy and then throw up.", [], {"lose_health": 10}, new_table);
   candy.choices = [new Choice("Eat some candy", throwup), new Choice("Check out a different table", new_table)];
 
   var state = throwup;
@@ -21,6 +21,9 @@ function Game(){
 
   function build_update(){
     var description = "<div class='phrase'>"+state.description+"</div>"
+    if(state.side_effects["lose_health"]){
+      character.health -= state.side_effects["lose_health"];
+    }
     if(state.auto){
       state = state.auto;
       return description + build_update();
@@ -44,12 +47,13 @@ function Game(){
 
 function Character(name){
   this.name = name;
-  this.health = 100;
+  this.health = 0;
 }
 
-function Happening(description, choices, auto=null){
+function Happening(description, choices, side_effects = {}, auto=null){
   this.description = description;
   this.choices = choices;
+  this.side_effects = side_effects;
   this.auto = auto;
 }
 
