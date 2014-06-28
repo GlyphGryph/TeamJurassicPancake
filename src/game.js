@@ -45,7 +45,7 @@ function Game(){
       jQuery.each(state.auto, function(index, auto){
         if(!target_selected && !auto["condition"]){
           target_selected = auto["target"];
-        } else if(!target_selected && auto["condition"]() ) {
+        } else if(!target_selected && auto["condition"](character) ) {
           target_selected = auto["target"];
         }
       });

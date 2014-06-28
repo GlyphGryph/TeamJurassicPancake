@@ -8,7 +8,7 @@ function load_dummy_scenes(){
       ],
       "auto": [
         { "target": "candy_sick",
-          "conditions": function(character){
+          "condition": function(character){
             if(character.health < -60){
               return true;
             } else {
