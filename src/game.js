@@ -5,6 +5,7 @@ function Game(){
   var state_manager;
   var ticket_pool = [];
   var input_enabled = true;
+  var update_frequency = 1; // Hours between updates
   real_data = confirm("Load real data?")
   if(real_data){
     scenes = load_scenes();
@@ -48,15 +49,9 @@ function Game(){
     var character_text; 
     character_text = "<div>"
     character_text += "<span class='name'>"+character.name+"</span>";
-    character_text += "<span class='health'>Health: "+character.health+"</span>";
-    character_text += "<span class='anxiety'>Anx: "+character.anxiety+"</span>";
-    character_text += "<span class='ambition'>Amb: "+character.ambition+"</span>";
-    character_text += "<span class='willpower'>Will: "+character.willpower+"</span>";
-    character_text += "<span class='self esteem'>Slf: "+character.self_esteem+"</span>";
-    character_text += "<span class='comfort'>Cmf: "+character.comfort+"</span>";
-    character_text += "<span class='hygiene'>Hyg: "+character.hygiene+"</span>";
-    character_text += "<span class='progress'>Prg: "+character.progress+"</span>";
-    character_text += "<span class='money'>$$$: "+character.money+"</span>";
+    jQuery.each(character.attributes, function(index, attribute){
+      character_text += "<span class='"+attribute.id+"'>"+attribute.label+": "+attribute.value+"</span>";
+    });
     character_text += "<span class='time'>Time: "+time.formatted()+"</span>";
     character_text += "</div>";
     if(character.conditions.length > 0){
@@ -76,7 +71,7 @@ function Game(){
     time.total_hours += 1;
     update_character();
     update_description("<div class='phrase'>Time passes...</div>");
-    if(time.total_hours%24 === 8){
+    if(time.total_hours%update_frequency === 0){
       var current_priority = 1;
       var tickets = [];
       jQuery.each(ticket_pool, function(index, happening){
@@ -96,9 +91,6 @@ function Game(){
        }   
       });
       var max = tickets.length-1
-      if(current_priority === 1){
-        max = 365;
-      }
       var draw = getRandomInt(0,max);
       if(tickets[draw]){
         state_manager.change_state(tickets[draw]);
@@ -174,26 +166,10 @@ function Game(){
         display += character.add_condition(effect.value);
       } else if(effect.action == "remove_condition"){
         display += character.remove_condition(effect.value);
+      } else if(effect.action == "modify_attribute"){
+        character.modify_attribute(effect.id, effect.value);
       } else if(effect.action == "time_passes"){
         time.total_hours+=effect.value;
-      } else if(effect.action == "health"){
-        character.health+=effect.value;
-      } else if(effect.action == "anxiety"){
-        character.anxiety+=effect.value;
-      } else if(effect.action == "willpower"){
-        character.willpower+=effect.value;
-      } else if(effect.action == "self_esteem"){
-        character.self_esteem+=effect.value;
-      } else if(effect.action == "comfort"){
-        character.comfort+=effect.value;
-      } else if(effect.action == "hygiene"){
-        character.hygiene+=effect.value;
-      } else if(effect.action == "progress"){
-        character.progress+=effect.value;
-      } else if(effect.action == "ambition"){
-        character.ambition+=effect.value;
-      }else if(effect.action == "money"){
-        character.money+=effect.value;
       }
       
     });
@@ -232,22 +208,20 @@ function StateManager(){
   this.history = new History();
 
   this.change_state = function(new_state){
-    this.history.add(new_state);
-    this.state = new_state;
+    if(new_state){
+      this.history.add(new_state);
+      this.state = new_state;
+    } else {
+      throw "ERROR: Invalid state provided!";
+    }
   }
 }
 
 function Character(name){
   this.name = name;
-  this.health = 100;
-  this.anxiety = 10;
-  this.ambition = 40;
-  this.willpower = 30;
-  this.self_esteem = 30;
-  this.comfort = 50;
-  this.hygiene = 40;
-  this.progress = 0;
-  this.money = 500;
+  this.attributes = [
+    {"id": "progress", "label": "Progress", "value": 0}
+  ]
   this.conditions = [];
 
   this.add_condition = function(condition){
@@ -257,6 +231,19 @@ function Character(name){
     //}
     return "<div class='condition'>You have acquired '"+condition+"'!</div>";
   };
+
+  this.modify_attribute = function(id, value){
+    var modified=false;
+    jQuery.each(this.attributes, function(index, attribute){
+      if(attribute.id == id){
+        attribute.value+=value;
+        modified=true;
+      }
+    });
+    if(!modified){
+      throw("ERROR: Tried to modify an attribute that doesn't exist.");
+    }
+  }
 
   this.process_conditions = function(){
     for (i = 0; i < this.conditions.length; i++) { 

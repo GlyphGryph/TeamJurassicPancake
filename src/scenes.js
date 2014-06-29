@@ -34,10 +34,19 @@ function load_scenes(){
       "id": "work",
       "text": "You work your ass off. It's exhausting.",
       "after": [
-        {"action": "progress", "value": 5},
+        {"action": "modify_attribute", "id": "progress", "value": 5},
       ],
-      "auto": [
-        {"target": "open"},
+      "choices": [
+        {"text": "Moving on...", "target": "open"},
+      ]
+    },
+    { "type": "chain",
+      "id": "sleep",
+      "text": "You sleep your ass off. It's invigorating.",
+      "after": [
+      ],
+      "choices": [
+        {"text": "Moving on...", "target": "open"},
       ]
     }
   ]
