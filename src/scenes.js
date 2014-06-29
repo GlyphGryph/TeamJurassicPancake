@@ -65,6 +65,34 @@ function load_scenes(){
         {"text": "Another sleep well done. That was nice. But now it's time to get up.", "target": "open"},
       ]
     },
+    // RANDOM EVENTS - These event chains get mixed in with the regular decisions
+    // OVERRIDES - These are event chains that happen with priorities, such as falling asleep from being exhausted
+    { "type": "open",
+      "priority": 3,
+      "tickets": function(character, history, time){
+        if(character.get_attribute("fatigue") >= 100){
+          return 10;
+        } else {
+          return 0;
+        }
+      },
+      "id": "the_choice",
+      "text": "What... huh... ugh... can't focus... so... zzzzZZZzzzZZzzzz",
+      "auto": [
+        {"target": "force_sleep"},
+      ],
+    },
+    { "type": "chain",
+      "id": "force_sleep",
+      "text": "<p>Ugh? What happened? Did I fall asleep at my desk?</p>",
+      "before": [
+        { "action": "tic", "value": 8 },
+        {"action": "modify_attribute", "id": "fatigue", "value": -48 },
+      ],
+      "choices": [
+        {"text": "Not the most comfortable sleep I've ever had, but, I'm awake now.", "target": "open"},
+      ]
+    },
     // ENDINGS
     { "type": "open",
       "priority": 5,
