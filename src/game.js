@@ -6,12 +6,7 @@ function Game(){
   var ticket_pool = [];
   var input_enabled = true;
   var update_frequency = 1; // Hours between updates
-  real_data = confirm("Load real data?")
-  if(real_data){
-    scenes = load_scenes();
-  } else { 
-    scenes = load_dummy_scenes();
-  }
+  scenes = load_scenes();
   var happenings = {};
   jQuery.each(scenes, function(index, scene){
     var happening = new Happening(scene);
