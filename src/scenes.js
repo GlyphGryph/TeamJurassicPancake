@@ -16,41 +16,443 @@ function load_scenes(){
       "choices": [{
         "text": "Check on internet for tips for budding artists",
         "target": "day_1_look_online"
+      },
+      {
+        "text": "Get practicing",
+        "target": "day_1_get_practice"
       }],
     },
     { "type": "chain",
       "id": "day_1_look_online",
       "text": "<p>Hm, let's check online, maybe someone has useful tips. Click click, read read. Hard work. Diligence. No shortcuts. Don't crave fame. So what they're telling me is that I just have to keep painting and avoid seeming desperate. Easy for them to say, they're already there. They say that getting criticism will help you improve quickly, but am I ready for that?</p>",
       "choices": [{
+        "text": "Yes.",
+        "target": "day_1_yes_crit"
+      },
+      {
         "text": "No.",
         "target": "day_1_no_crit"
       }],
-      "after": [
-        {"action": "add_condition", "value": "melancholic spirit",},
-        {"action": "self_esteem", "value": -2,},
-        {"action": "time_passes", "value": 4},
+    },
+    { "type": "chain",
+      "id": "day_1_get_practice",
+      "text": "<p>Practicing seems like a good start. I know I've done it before, but one can't practice too much. I bet all the great ones also practiced a lot before going public. I don't have all the basics down yet, but I'm sure they'll come.</p>",
+      "choices": [{
+        "text": "[...]",
+        "target": "open"
+      }],
+	  "after": [
+		{"action": "ambition", "value": -5,},
+		{"action": "progress", "value": 5,},
       ],
     },
     { "type": "chain",
       "id": "day_1_no_crit",
       "text": "<p>Nah, another day perhaps, after some more practicing. Speaking of which, better do some of that practicing. Paint paint. Looks vaguely like a potato, is actually supposed to be a vase. How does one even do that?</p> <p>Enough practicing for today.</p>",
-      "after": [
-        //{"action": "remove_condition", "value": "melancholic spirit",}
-      ],
+      
       "choices": [{
         "text": "[...]",
-        //"target": "open" // will undo this once I can run through the whole thing
-        "target": "day_14_store_time"
+        "target": "open"
       }],
+	  "after": [
+		{"action": "ambition", "value": 5,},
+		{"action": "progress", "value": 10,},
+		{"action": "willpower", "value": -5,},
+		{"action": "comfort", "value": -5,},
+		{"action": "anxiety", "value": 10,},
+      ],
+    },
+    { "type": "chain",
+      "id": "day_1_yes_crit",
+      "text": "<p>Yeah, I guess. This is gonna be a rough ride, because I know I'm not very good, and the critics are probably going to tear me a new one. I hope this is the right choice.</p> <p>Painted a few things to the best of my ability, and asked online for criticism, straight out of the box. Let's see how this goes.</p>",
       
+      "choices": [{
+        "text": "[...]",
+        "target": "open"
+      }],
+	  "after": [
+		{"action": "ambition", "value": -5,},
+		{"action": "self_esteem", "value": -5,},
+		{"action": "progress", "value": 5,},
+      ],
+    },
+	
+	
+	
+	{ "type": "open",
+      "priority": 1,
+      "tickets": function(character, history, timestamp){
+        return 360;
+      },
+      "id": "daily_routines",
+      "text": "<p>Another day, another chance to move through this life.</p>",
+      "choices": [
+        { "text": "Practice intensely.",
+          "target": "daily_practice_intense",
+		  "condition": function(character, history, timestamp){
+            if(character.willpower >= 50){
+              return true;
+            } else {
+              return false;
+            }
+          }
+        },
+		{ "text": "Take care of yourself, and then your art.",
+          "target": "daily_taking_care",
+		  "condition": function(character, history, timestamp){
+            if(character.willpower >= 10){
+              return true;
+            } else {
+              return false;
+            }
+          }
+        },
+		{ "text": "Clean the apartment.",
+          "target": "daily_cleaning",
+        },
+		{ "text": "Loaf around for the whole day, and browse the internets",
+          "target": "daily_browsing",
+        },
+		{ "text": "Ugh.",
+          "target": "open",
+        },
+		{ "text": "Ugh.",
+          "target": "open",
+        },
+      ],
+	  "after": [
+		{"action": "money", "value": -15,},
+		{"action": "ambition", "value": -5,},
+        {"action": "comfort", "value": -5,},
+		{"action": "hygiene", "value": -5,}
+      ],
+    },
+	{ "type": "chain",
+      "id": "daily_practice_intense",
+      "text": "<p>You have so much creativity today, and you need to let it all out. All of a sudden you look up from your work and you haven't eaten all day. You don't feel like getting a shower. God damn you could use some sleep right now.</p>",
+      "choices": [{
+        "text": "[...]",
+        "target": "open"
+      }],
+	  "after": [
+		{"action": "progress", "value": 7,},
+		{"action": "anxiety", "value": 10,},
+		{"action": "ambition", "value": 20,},
+        {"action": "comfort", "value": -5,},
+		{"action": "willpower", "value": -10,}
+      ],
+    },
+	{ "type": "chain",
+      "id": "daily_taking_care",
+      "text": "<p>Today I'm going to eat, shower, and get some painting done. That seems like an okay day.</p>",
+      "choices": [{
+        "text": "[...]",
+        "target": "open"
+      }],
+	  "after": [
+		{"action": "progress", "value": 2,},
+		{"action": "ambition", "value": 5,},
+		{"action": "anxiety", "value": 5,},
+		{"action": "hygiene", "value": 15,},
+		{"action": "willpower", "value": -5,}
+      ],
+    },
+	{ "type": "chain",
+      "id": "daily_cleaning",
+      "text": "<p>Alright, you need to clean this pig's place of an apartment. Sometimes it just gets too much, you know?</p>",
+      "choices": [{
+        "text": "[...]",
+        "target": "open"
+      }],
+	  "after": [
+        {"action": "comfort", "value": 20,},
+      ],
+    },
+	{ "type": "chain",
+      "id": "daily_browsing",
+      "text": "<p>Some days you just have to take for yourself, you know? You'll get back to painting, but you need a personal day. You need to recharge after all of that intense creativity. That you have totally been doing. Yes.</p>",
+      "choices": [{
+        "text": "[...]",
+        "target": "open"
+      }],
+	  "after": [
+		{"action": "ambition", "value": -5,},
+		{"action": "health", "value": 10,},
+		{"action": "willpower", "value": 15,},
+		{"action": "anxiety", "value": -5,},
+      ],
+    },
+	
+	
+	
+	
+	
+	{ "type": "open",
+      "priority": 1,
+      "tickets": function(character, history, timestamp){
+        return 40;
+      },
+      "id": "store_event_a",
+      "text": "<p>I'm out of toilet paper, so I have to get out of bed and buy some. Might as well get some food while I'm at it.</p> <p>At the store now, vaguely resembling a human being. Been wondering if maybe I should pick some other things up. Budget's a bit tight, but there's still things to choose from, I think.</p>",
+      "choices": [
+		{ "text": "Get cheap noodles",
+          "target": "store_event_a_noodles",
+		},
+		{ "text": "Get mid-range meal",
+          "target": "store_event_a_meal",
+        },
+		{ "text": "Just the toilet paper",
+          "target": "store_event_a_nm",
+        },
+	  ],
+	  "after": [
+		{"action": "hygiene", "value": 10,},
+		{"action": "comfort", "value": 10,},
+      ],
+    },
+	{ "type": "chain",
+      "id": "store_event_a_noodles",
+      "text": "<p>I guess I can't really afford luxury right now. Noodles it is, then. Noodles and toilet paper. The sooner I can get out of here, the better.</p>",
+      "choices": [{
+        "text": "[...]",
+        "target": "open",
+		"condition": function(character, history, timestamp){
+            if(character.willpower >= 20){
+              return true;
+            } else {
+              return false;
+            }
+          }
+      },
+	  {
+        "text": "Wait, is that a bus?",
+        "target": "store_bus_a",
+		"condition": function(character, history, timestamp){
+            if(character.willpower < 20){
+              return true;
+            } else {
+              return false;
+            }
+          }
+      }
+	  ],
+    },
+	{ "type": "chain",
+      "id": "store_event_a_meal",
+      "text": "<p>Today's a good day, so I think I'll get something slightly better than noodles. A quick chili, perhaps?</p> <p>On the way home now. People are driving like mad today. Better not hang too close to the road, in case more crazy bus drivers try to decapitate me.</p> <p>Back home, chili made and eaten. That burning sensation is both nice and terrible at the same time.</p>",
+      "choices": [{
+        "text": "[...]",
+        "target": "open"
+      }],
+	  "after": [
+		{"action": "health", "value": 5,},
+        {"action": "money", "value": -15,},
+      ],
+    },
+	{ "type": "chain",
+      "id": "store_event_a_nm",
+      "text": "<p>Not feeling like sticking around to pick up anything else.</p>",
+      "choices": [{
+        "text": "[...]",
+        "target": "open"
+      }],
+    },
+	{ "type": "chain",
+      "id": "store_a_bus",
+      "text": "<p>Standing at the bus stop. Slumping a bit together, not feeling all that good about myself. Bus comes in. Bus driver seems rather sleepy. Head's leaning a bit too far forwards, and gets smacked by the mirror.</p> <p>Ow. Woken up on the tarmac, concerned people looking at me. Yeah, I'm fine, hell of a headache though. Probably a concussion. Ugh. People insist that I go to a doctor. Guess I won't be doing more today.</p> <p>Doctor confirmed concussion, told me to stay in bed as much as possible the next few days. Not very easy when you live on your own.</p>",
+      "choices": [{
+        "text": "[...]",
+        "target": "open"
+      }],
+	  "after": [
+		{"action": "self_esteem", "value": -5,},
+		{"action": "health", "value": -40,},
+		{"action": "progress", "value": -2,},
+		{"action": "hygiene", "value": -5,},
+      ],
+    },
+	
+	
+	{ "type": "open",
+      "priority": 2,
+      "tickets": function(character, history, timestamp){
+        if (timestamp.day() > 3 && character.progress > 10) // && history.excludes("milestone_a"))  // <- THERES A BUG IN EXCLUDES D: AND IT'S MAKING THIS HARD D:
+        {
+          return 1;
+        };
+      },
+      "id": "milestone_a",
+      "text": "<p>Been trying to address the criticism I've been getting, making some progress. One guy even openly offered to keep checking in and guide me along, which I think is awesome.</p>",
+      "choices": [
+	  {
+        "text": "I should paint for myself!",
+        "target": "milestone_a_selfpaint",
+		"condition": function(character, history, timestamp){
+            if(character.willpower >= 20 && character.self_esteem >= 20 ){
+              return true;
+            } else {
+              return false;
+            }
+          }
+      },
+	  {
+        "text": "I should practice alone.",
+        "target": "milestone_a_forever_alone",
+      },
+	  ],
+    },
+	{ "type": "chain",
+      "id": "milestone_a_selfpaint",
+      "text": "<p>I feel pretty good today, maybe I should just try dicking around and see what comes out of it. One bird, with... Two birds on top. Because why not? They don't look a lot like birds, though. Oh well.</p>",
+      "choices": [{
+        "text": "[...]",
+        "target": "open"
+      }],
+      "after": [
+		{"action": "self_esteem", "value": 5,},
+		{"action": "progress", "value": 10,},
+		{"action": "willpower", "value": -10,},
+		{"action": "anxiety", "value": 10,},
+      ],
+    },
+	{ "type": "chain",
+      "id": "milestone_a_forever_alone",
+      "text": "<p>Hnng. I really should get some tips from others, progress is hard on my own. But, depression wins over socialities today. Maybe I can at least do some lazy strokes on the canvas. Maybe if I try to paint a box. Can't be assed to think outside the box today.</p> <p>Painted more than one box. Feel like I'm kind of getting the hang of that, at least.</p>",
+      "choices": [{
+        "text": "[...]",
+        "target": "open"
+      }],
+      "after": [
+		{"action": "self_esteem", "value": -2,},
+		{"action": "progress", "value": 5,},
+		{"action": "ambition", "value": -5,},
+		{"action": "anxiety", "value": 5,},
+      ],
+    },
+	
+    
+    
+    
+    
+    { "type": "open",
+      "priority": 2,
+      "tickets": function(character, history, timestamp){
+        if (timestamp.day() > 3 && character.progress > 20) // && history.excludes("milestone_b"))  // <- THERES A BUG IN EXCLUDES D: AND IT'S MAKING THIS HARD D:
+        {
+          return 1;
+        };
+      },
+      "id": "milestone_b",
+      "text": "<p>Number of caustic assholes lessening, probably getting bored of mocking the depressive fool. Not quite as many people responding to my efforts as before, but the one guy who offered to guide me is still around. Swell chap, knows his stuff. I don't feel worthy of his attention. Apartment getting a bit messy, but nothing serious.</p>",
+      "choices": [
+	  {
+        "text": "I should practice alone.",
+        "target": "milestone_b_practice",
+      },
+      {
+        "text": "I should clean my apartment.",
+        "target": "milestone_b_clean",
+      },
+      {
+        "text": "I should put more stuff online.",
+        "target": "milestone_b_online",
+      },
+	  ],
+    },
+    { "type": "chain",
+      "id": "milestone_b_practice",
+      "text": "<p>Been practicing quietly, seeing some slow improvement. Disappointingly slow.</p>",
+      "choices": [{
+        "text": "[...]",
+        "target": "open"
+      }],
+      "after": [
+		{"action": "self_esteem", "value": -2,},
+		{"action": "progress", "value": 3,},
+		{"action": "ambition", "value": -5,},
+		{"action": "anxiety", "value": 5,},
+      ],
+    },
+    { "type": "chain",
+      "id": "milestone_b_clean",
+      "text": "<p>Might as well clean the place now that I have the excess to do it, and while it's not a monumental task. Might even be able to squeeze in a sketch or two after this.</p>",
+      "choices": [{
+        "text": "[...]",
+        "target": "open"
+      }],
+      "after": [
+		{"action": "hygiene", "value": 10,},
+		{"action": "progress", "value": 2,},
+      ],
+    },
+    { "type": "chain",
+      "id": "milestone_b_online",
+      "text": "<p>Yes, I'll go online and show what I've made so far. Perhaps they'll offer some tips. Turning on computer, clicking the browser, finding suitable site.</p> <p>Scribblings are public now. No response yet. Perhaps it'll trickle in later. Meanwhile, better keep practicing the basic stuff.</p>",
+      "choices": [{
+        "text": "[...]",
+        "target": "open"
+      }],
+      "after": [
+		{"action": "self_esteem", "value": 5,},
+		{"action": "progress", "value": 10,},
+		{"action": "willpower", "value": -10,},
+		{"action": "anxiety", "value": 10,},
+      ],
+    },
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    { "type": "open",
+      "priority": 2,
+      "tickets": function(character, history, timestamp){
+        if (character.progress > 100) 
+        {
+          return 1;
+        };
+      },
+      "id": "victory",
+      "text": "<p>Last necessary entry. My art has been exhibited. People are talking about how unconventional and creative it is. I still get depressive from time to time, but in between that... I'm actually happy. I've made it. People are voluntarily donating a bit of money to me so I can keep painting. I respond by giving people free requests from time to time. My best pieces go into exhibits. I'm not the wealthiest man ever, but I'm actually making a living off of this.</p> <p>Oh, friend's calling me. Turned out he lives a few blocks away. Wants to go have a pint at the pub for celebration. Do I feel like it?</p> <p>Yeah. I do.</p>",
       
     },
+    
+    
+    { "type": "open",
+      "priority": 2,
+      "tickets": function(character, history, timestamp){
+        if (character.money < 0) 
+        {
+          return 1;
+        };
+      },
+      "id": "the_dream_is_dead",
+      "text": "<p>Yeah. Pipe dream. This ain't going nowhere. At least I know how to clean things. Maybe I can get a job as a janitor, or something.</p>",
+    },
+    
+    
+    
+    
+    ////////////
+    
+    
     { "type": "open",
       "priority": 3,
       "tickets": function(character, history, timestamp){
-        if(character.ambition > 0 && history.excludes("day_14_store_time") && timestamp.day() == 14 && timestamp.hour() == 10){
-          return 1;
-        }
+        //if(character.ambition > 0 && history.excludes("day_14_store_time") && timestamp.day() == 14 && timestamp.hour() == 10){
+        //  return 1;
+        //}
         return 0;
       },
       "id": "day_14_store_time",

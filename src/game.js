@@ -45,10 +45,13 @@ function Game(){
     character_text = "<span class='name'>"+character.name+"</span>";
     character_text += "<span class='health'>Health: "+character.health+"</span>";
     character_text += "<span class='anxiety'>Anx: "+character.anxiety+"</span>";
+    character_text += "<span class='ambition'>Amb: "+character.ambition+"</span>";
     character_text += "<span class='willpower'>Will: "+character.willpower+"</span>";
     character_text += "<span class='self esteem'>Slf: "+character.self_esteem+"</span>";
     character_text += "<span class='comfort'>Cmf: "+character.comfort+"</span>";
     character_text += "<span class='hygiene'>Hyg: "+character.hygiene+"</span>";
+    character_text += "<span class='progress'>Prg: "+character.progress+"</span>";
+    character_text += "<span class='money'>$$$: "+character.money+"</span>";
     character_text += "<span class='time'>Time: "+time.formatted()+"</span>";
     jQuery("#character").html(character_text);
     return character_text;
@@ -172,6 +175,12 @@ function Game(){
         character.comfort+=effect.value;
       } else if(effect.action == "hygiene"){
         character.hygiene+=effect.value;
+      } else if(effect.action == "progress"){
+        character.progress+=effect.value;
+      } else if(effect.action == "ambition"){
+        character.ambition+=effect.value;
+      }else if(effect.action == "money"){
+        character.money+=effect.value;
       }
       
     });
@@ -207,12 +216,15 @@ function Game(){
 
 function Character(name){
   this.name = name;
-  this.health = 0;
-  this.anxiety = 0
-  this.willpower = 5;
-  this.self_esteem = 5;
-  this.comfort = 10;
-  this.hygiene = 10;
+  this.health = 100;
+  this.anxiety = 10;
+  this.ambition = 40;
+  this.willpower = 30;
+  this.self_esteem = 30;
+  this.comfort = 50;
+  this.hygiene = 40;
+  this.progress = 0;
+  this.money = 500;
   this.conditions = [];
 
   this.add_condition = function(condition){
