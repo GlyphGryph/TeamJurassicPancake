@@ -111,12 +111,12 @@ function Game(){
     description += handle_effects(state_manager.state.before);
     // In case any of those effects changes the time, process conditions
     description += process_conditions();
-    if(time.total_hours != last_time.total_hours){
+    if(time.total_hours !== last_time.total_hours){
       description += time_passed();
     }
     last_time.total_hours = time.total_hours;
     if(state_manager.state.description){
-      description = "<div class='phrase'>"+state_manager.state.description+"</div>";
+      description += "<div class='phrase'>"+state_manager.state.description+"</div>";
     }
 
     //Process any effects that occue after the bulk of this happending
