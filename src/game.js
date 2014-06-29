@@ -39,12 +39,19 @@ function Game(){
     update_text = build_update();
     character_text = "<span class='name'>"+character.name+"</span>";
     character_text += "<span class='health'>Health: "+character.health+"</span>";
+    character_text += "<span class='anxiety'>Anx: "+character.anxiety+"</span>";
+    character_text += "<span class='willpower'>Will: "+character.willpower+"</span>";
+    character_text += "<span class='self esteem'>Slf: "+character.self_esteem+"</span>";
+    character_text += "<span class='comfort'>Cmf: "+character.comfort+"</span>";
+    character_text += "<span class='hygiene'>Hyg: "+character.hygiene+"</span>";
     character_text += "<span class='time'>Time: "+time.formatted()+"</span>";
     jQuery("#character").html(character_text);
     jQuery("#description").html(update_text);
   }
 
   this.pass_time = function(){
+    time.total_hours+=24;
+    character.process_conditions()
     alert("time passing");
   }
 
@@ -106,7 +113,18 @@ function Game(){
         time.total_hours+=effect.value;
       } else if(effect.action == "health"){
         character.health+=effect.value;
+      } else if(effect.action == "anxiety"){
+        character.anxiety+=effect.value;
+      } else if(effect.action == "willpower"){
+        character.willpower+=effect.value;
+      } else if(effect.action == "self_esteem"){
+        character.self_esteem+=effect.value;
+      } else if(effect.action == "comfort"){
+        character.comfort+=effect.value;
+      } else if(effect.action == "hygiene"){
+        character.hygiene+=effect.value;
       }
+      
     });
     return display;
   }
@@ -126,6 +144,7 @@ function Game(){
       that.run();
     } else {
       that.pass_time();
+      that.run();
     }
   });
 }
@@ -142,7 +161,25 @@ function Character(name){
 
   this.add_condition = function(condition){
     this.conditions.push(condition);
+    //if (condition == "melancholic spirit") {
+    //  this.willpower -= 1;
+    //}
     return "<div class='condition'>You have acquired '"+condition+"'!</div>";
+  };
+  this.process_conditions = function(){
+    for (i = 0; i < this.conditions.length; i++) { 
+      condition_pull = this.conditions[i];
+      switch (condition_pull) {
+        case "melancholic spirit":
+            this.willpower -= 1;
+            break;
+        
+        default:
+            break;
+      }
+    }
+    
+    
   };
   this.remove_condition = function(condition){
     var index_to_delete = this.conditions.findIndex(function(a){return a == condition});

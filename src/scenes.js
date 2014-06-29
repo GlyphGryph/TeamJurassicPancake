@@ -25,14 +25,25 @@ function load_scenes(){
         "text": "No.",
         "target": "day_1_no_crit"
       }],
+      "after": [
+        {"action": "add_condition", "value": "melancholic spirit",},
+        {"action": "self_esteem", "value": -2,},
+        {"action": "time_passes", "value": 4},
+      ],
     },
     { "type": "chain",
       "id": "day_1_no_crit",
       "text": "<p>Nah, another day perhaps, after some more practicing. Speaking of which, better do some of that practicing. Paint paint. Looks vaguely like a potato, is actually supposed to be a vase. How does one even do that?</p> <p>Enough practicing for today.</p>",
+      "after": [
+        //{"action": "remove_condition", "value": "melancholic spirit",}
+      ],
       "choices": [{
         "text": "[...]",
-        "target": "open"
+        //"target": "open" // will undo this once I can run through the whole thing
+        "target": "day_14_store_time"
       }],
+      
+      
     },
     { "type": "open",
       "priority": 3,
@@ -49,7 +60,7 @@ function load_scenes(){
         "target": "day_14_cheap_noodles"
       }],
     },
-    { "type": "chain",
+    { "type": "chain", // this seems more like a random event?
       "id": "day_14_cheap_noodles",
       "text": "<p>I guess I can't really afford luxury right now. Noodles it is, then. Noodles and toilet paper. The sooner I can get out of here, the better.</p> <p>Standing at the bus stop. Slumping a bit together, not feeling all that good about myself. Bus comes in. Bus driver seems rather sleepy. Head's leaning a bit too far forwards, and gets smacked by the mirror.</p> <p>Ow. Woken up on the tarmac, concerned people looking at me. Yeah, I'm fine, hell of a headache though. Probably a concussion. Ugh. People insist that I go to a doctor. Guess I won't be doing more today.</p> <p>Doctor confirmed concussion, told me to stay in bed as much as possible the next few days. Not very easy when you live on your own.</p>",
       "choices": [{
@@ -80,6 +91,9 @@ function load_scenes(){
         "text": "[...]",
         "target": "day_41_denial_of_actual_depressive_episode"
       }],
+      "after": [
+        {"action": "add_condition", "value": "flu",}
+      ],
     },
     { "type": "chain",
       "id": "day_41_denial_of_actual_depressive_episode",
@@ -88,6 +102,9 @@ function load_scenes(){
         "text": "Keep practicing in private",
         "target": "day_41_denial_of_any_personal_skill"
       }],
+      "after": [
+        // {"action": "remove_condition", "value": "flu",}
+      ],
     },
     { "type": "chain",
       "id": "day_41_denial_of_any_personal_skill",
@@ -112,6 +129,9 @@ function load_scenes(){
         "text": "[...]",
         "target": "day_81_fear_and_loathing_of_that_growing_toxic_mold_in_the_corner_that_i_dont_really_want_to_look_at_and_also_denial_of_continued_depressive_episode_..._huh_my_life_really_sucks_right_now"
       }],
+      "after": [
+        {"action": "comfort", "value": -5},
+      ],
     },
     { "type": "chain",
       "id": "day_81_fear_and_loathing_of_that_growing_toxic_mold_in_the_corner_that_i_dont_really_want_to_look_at_and_also_denial_of_continued_depressive_episode_..._huh_my_life_really_sucks_right_now",
@@ -150,6 +170,9 @@ function load_scenes(){
         "text": "[...]",
         "target": "day_113_dying_dreams"
       }],
+      "after": [
+        {"action": "comfort", "value": 15},
+      ],
     },
     { "type": "chain",
       "id": "day_104_hospital_visit",
