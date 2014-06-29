@@ -12,7 +12,7 @@ function load_scenes(){
     */
     { "type": "initial",
       "id": "start",
-      "text": "GET STARTED!",
+      "text": "<p>Okay, three days left to do that Kickstarter art thing I've been commissioned to. Three days. I know I got contacted a couple of weeks ago, but I am an almost pathological procrastinator. Now, money's running REALLY low, and so is time. I guess it's time that I go through the usual stressed routine of finishing in time, and hope for the best. At least the pay's decent for this. At least I have glorious coffee. So, what do I do today?</p>",
       "choices": [
         {"text": "Work", "target": "work"},
       ],
