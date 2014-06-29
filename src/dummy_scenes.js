@@ -9,15 +9,17 @@ function load_dummy_scenes(){
       ]
     },
     { "type": "open",
-      "priority": 3,
+      "priority": 1,
       "tickets": function(character, history, timestamp){
-        if(character.ambition > 0 && timestamp.day() == 14 && timestamp.hour() == 10){
-          return 1;
-        }
-        return 0;
+        return 1;
       },
-      "id": "find_table",
-      "text": "<p></p>",
+      "id": "bird_poop",
+      "text": "<p>A bird poops on you.</p>",
+      "choices": [
+        { "text": "Ugh.",
+          "target": "open",
+        },
+      ]
     },
     { "id": "eat_candy",
       "text": "<p>You eat some candy from the table.</p>",

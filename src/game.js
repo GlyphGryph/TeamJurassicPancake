@@ -60,7 +60,21 @@ function Game(){
     time.total_hours += 1;
     update_character();
     jQuery("#description").html("<div class='phrase'>Time passes...</div>");
-    if(time.total_hours > 100){
+    if(time.total_hours%24 === 8){
+      var current_priority = 1;
+      var tickets = [];
+      jQuery.each(ticket_pool, function(index, happening){
+        if(happening.tickets(character, history, time) > 0){
+          if(happening.priority > current_priority){
+            tickets = [];
+            current_priority = happening.priority;
+            tickets.push(happening);
+          } else if(happening.priority === current_priority){
+            tickets.push(happening);
+          }
+       }   
+      });
+      state = tickets[0];
       happen=true;
     }
     if(happen){
@@ -225,6 +239,9 @@ function Happening(scene){
     });
   }
   this.choices = choices;
+  this.tickets = scene["tickets"] || function(){return 0};
+  this.priority = scene["priority"] || 1;
+  this.type = scene["type"] || "chain";
   this.before = scene["before"] || [];
   this.after = scene["after"] || [];
   this.auto = scene["auto"] || null;
