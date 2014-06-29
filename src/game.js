@@ -224,6 +224,19 @@ function Character(name){
   ]
   this.conditions = [];
 
+  this.get_attribute = function(id){
+    var value;
+    jQuery.each(this.attributes, function(index, attribute){
+      if(attribute.id == id){
+       value = attribute.value;
+      }
+    });
+    if(!value){
+      throw "ERROR: Attribute does not exist.";
+    }
+    return value;
+  }
+
   this.add_condition = function(condition){
     this.conditions.push(condition);
     //if (condition == "melancholic spirit") {

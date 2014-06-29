@@ -55,7 +55,7 @@ function load_scenes(){
     { "type": "open",
       "priority": 5,
       "tickets": function(character, history, time){
-        if(character.attributes.progress > 100 && time.total_hours === 72){
+        if(character.get_attribute("progress") > 100 && time.total_hours === 72){
           return 1;
         }
         return 0;
