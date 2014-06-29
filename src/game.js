@@ -216,9 +216,9 @@ function StateManager(){
 function Character(name){
   this.name = name;
   this.attributes = [
-    {"id": "progress", "label": "Progress", "value": 0},
-    {"id": "fatigue", "label": "Fatigue", "value": 0},
-    {"id": "hunger", "label": "Hunger", "value": 0},
+    {"id": "progress", "label": "Progress", "value": 0, "min": 0},
+    {"id": "fatigue", "label": "Fatigue", "value": 40, "min": 0},
+    {"id": "hunger", "label": "Hunger", "value": 20, "min": 0},
   ]
   this.conditions = [];
 
@@ -238,7 +238,13 @@ function Character(name){
   }
 
   this.get_focus = function(){
-    var focus = 100-(this.get_attribute("fatigue")/2) - (this.get_attribute("hunger")/2);
+    var fatigue_penalty;
+    if(this.get_attribute("fatigue") > 32){
+      fatigue_penalty = this.get_attribute("fatigue")-32;
+    } else {
+      fatigue_penalty = 0;
+    }
+    var focus = 100 - fatigue_penalty - (this.get_attribute("hunger")/2);
     return focus;
   }
 
@@ -256,6 +262,9 @@ function Character(name){
     jQuery.each(this.attributes, function(index, attribute){
       if(attribute.id == id){
         attribute.value+=value;
+        if("min" in attribute && attribute.min > attribute.value ){
+          attribute.value = attribute.min;
+        }
         modified=true;
       }
     });
@@ -302,7 +311,7 @@ function Character(name){
     } else if(this.get_focus() <= 80){
       modifier=4;
     } else {
-      modifier=1;
+      modifier=5;
     }
     this.modify_attribute("progress", modifier);
     return modifier;

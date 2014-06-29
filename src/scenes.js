@@ -21,6 +21,7 @@ function load_scenes(){
       "id": "start_work",
       "before": [
         {"action": "progress"},
+        {"action": "modify_attribute", "id": "fatigue", "value": 4 },
         {"action": "tic", "value": 1},
       ],
       "text": "<p>Better start working on this art thing, don't want to flop this one.</p>",
@@ -45,6 +46,7 @@ function load_scenes(){
       "id": "work",
       "before": [
         {"action": "progress"},
+        {"action": "modify_attribute", "id": "fatigue", "value": 4 },
         {"action": "tic", "value": 1},
       ],
       "text": "<p>Keeping up the... Work. Exhausting, but necessary. I think.</p>",
@@ -56,7 +58,8 @@ function load_scenes(){
       "id": "sleep",
       "text": "<p>zZzZzZzZz...</p>",
       "after": [
-        { "action": "tic", "value": 8 }
+        { "action": "tic", "value": 8 },
+        {"action": "modify_attribute", "id": "fatigue", "value": -64 },
       ],
       "choices": [
         {"text": "Another sleep well done. That was nice. But now it's time to get up.", "target": "open"},
