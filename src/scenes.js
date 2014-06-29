@@ -190,7 +190,8 @@ function load_scenes(){
 	{ "type": "open",
       "priority": 50,
       "tickets": function(character, history, timestamp){
-		if time.day() == 14 {return 10;}
+        if(time.day() == 14){return 10;}
+        return 0;
       },
       "id": "store_event_a",
       "text": "<p>I'm out of toilet paper, so I have to get out of bed and buy some. Might as well get some food while I'm at it.</p> <p>At the store now, vaguely resembling a human being. Been wondering if maybe I should pick some other things up. Budget's a bit tight, but there's still things to choose from, I think.</p>",
@@ -280,6 +281,7 @@ function load_scenes(){
         {
           return 1;
         };
+        return 0;
       },
       "id": "milestone_a",
       "text": "<p>Been trying to address the criticism I've been getting, making some progress. One guy even openly offered to keep checking in and guide me along, which I think is awesome.</p>",
@@ -341,6 +343,7 @@ function load_scenes(){
         {
           return 1;
         };
+        return 0;
       },
       "id": "milestone_b",
       "text": "<p>Number of caustic assholes lessening, probably getting bored of mocking the depressive fool. Not quite as many people responding to my efforts as before, but the one guy who offered to guide me is still around. Swell chap, knows his stuff. I don't feel worthy of his attention. Apartment getting a bit messy, but nothing serious.</p>",
@@ -422,6 +425,7 @@ function load_scenes(){
         {
           return 1;
         };
+        return 0;
       },
       "id": "victory",
       "text": "<p>Last necessary entry. My art has been exhibited. People are talking about how unconventional and creative it is. I still get depressive from time to time, but in between that... I'm actually happy. I've made it. People are voluntarily donating a bit of money to me so I can keep painting. I respond by giving people free requests from time to time. My best pieces go into exhibits. I'm not the wealthiest man ever, but I'm actually making a living off of this.</p> <p>Oh, friend's calling me. Turned out he lives a few blocks away. Wants to go have a pint at the pub for celebration. Do I feel like it?</p> <p>Yeah. I do.</p>",
@@ -436,6 +440,7 @@ function load_scenes(){
         {
           return 1;
         };
+        return 0;
       },
       "id": "the_dream_is_dead",
       "text": "<p>Yeah. Pipe dream. This ain't going nowhere. At least I know how to clean things. Maybe I can get a job as a janitor, or something.</p>",
