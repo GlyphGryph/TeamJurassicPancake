@@ -15,7 +15,6 @@ function load_scenes(){
       "text": "GET STARTED!",
       "choices": [
         {"text": "Work", "target": "work"},
-        {"text": "Sleep", "target": "sleep"},
       ],
     },
     // HOURLY CHOICE AND OPTIONS
