@@ -168,7 +168,7 @@ function Game(){
         display += character.remove_condition(effect.value);
       } else if(effect.action == "modify_attribute"){
         character.modify_attribute(effect.id, effect.value);
-      } else if(effect.action == "time_passes"){
+      } else if(effect.action == "tics"){
         time.total_hours+=effect.value;
       }
       
