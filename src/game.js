@@ -160,6 +160,8 @@ function Game(){
         display += character.add_condition(effect.value);
       } else if(effect.action == "remove_condition"){
         display += character.remove_condition(effect.value);
+      } else if(effect.action == "progress"){
+        character.progress();
       } else if(effect.action == "modify_attribute"){
         character.modify_attribute(effect.id, effect.value);
       } else if(effect.action == "tic"){
@@ -214,22 +216,32 @@ function StateManager(){
 function Character(name){
   this.name = name;
   this.attributes = [
-    {"id": "progress", "label": "Progress", "value": 0}
+    {"id": "progress", "label": "Progress", "value": 0},
+    {"id": "fatigue", "label": "Fatigue", "value": 0},
+    {"id": "hunger", "label": "Hunger", "value": 0},
   ]
   this.conditions = [];
 
   this.get_attribute = function(id){
     var value;
+    var found = false;
     jQuery.each(this.attributes, function(index, attribute){
-      if(attribute.id == id){
-       value = attribute.value;
+      if(attribute.id === id){
+        value = attribute.value;
+        found = true;
       }
     });
-    if(!value){
-      throw "ERROR: Attribute does not exist.";
+    if(!found){
+      throw "ERROR: Attribute ["+id+"] does not exist.";
     }
     return value;
   }
+
+  this.get_focus = function(){
+    var focus = 100-(this.get_attribute("fatigue")/2) - (this.get_attribute("hunger")/2);
+    return focus;
+  }
+
 
   this.add_condition = function(condition){
     this.conditions.push(condition);
@@ -248,7 +260,7 @@ function Character(name){
       }
     });
     if(!modified){
-      throw("ERROR: Tried to modify an attribute that doesn't exist.");
+      throw("ERROR: Tried to modify attribute ["+id+"], but it doesn't exist.");
     }
   }
 
@@ -273,9 +285,28 @@ function Character(name){
       this.conditions = this.conditions.slice(0,index_to_delete).concat(this.conditions.slice(index_to_delete+1))
       return "<div class='condition'>You are no longer suffering from '"+condition+"'!</div>";
     } else {
-      return "<div class='error'>ERROR: Attempted to remove a condition that does not exist!</div>";
+      return "<div class='error'>ERROR: Attempted to remove condition ["+condition+"] that does not exist!</div>";
     }
   };
+
+
+  this.progress = function(value){
+    if(this.get_focus() <= 10){
+      modifier=0;
+    } else if(this.get_focus() <= 20){
+      modifier=1;
+    } else if(this.get_focus() <= 40){
+      modifier=2;
+    } else if(this.get_focus() <= 60){
+      modifier=3;
+    } else if(this.get_focus() <= 80){
+      modifier=4;
+    } else {
+      modifier=1;
+    }
+    this.modify_attribute("progress", modifier);
+    return modifier;
+  }
 }
 
 function Happening(scene){

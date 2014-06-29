@@ -20,7 +20,7 @@ function load_scenes(){
     { "type": "chain",
       "id": "start_work",
       "before": [
-        {"action": "modify_attribute", "id": "progress", "value": 5},
+        {"action": "progress"},
         {"action": "tic", "value": 1},
       ],
       "text": "<p>Better start working on this art thing, don't want to flop this one.</p>",
@@ -44,7 +44,7 @@ function load_scenes(){
     { "type": "chain",
       "id": "work",
       "before": [
-        {"action": "modify_attribute", "id": "progress", "value": 5},
+        {"action": "progress"},
         {"action": "tic", "value": 1},
       ],
       "text": "<p>Keeping up the... Work. Exhausting, but necessary. I think.</p>",
