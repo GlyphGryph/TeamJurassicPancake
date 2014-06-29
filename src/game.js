@@ -83,7 +83,8 @@ function Game(){
       if(current_priority === 1){
         max = 365;
       }
-      var draw = getRandomInt(1,max);
+      var draw = getRandomInt(0,max);
+      debugger;
       if(tickets[draw]){
         state = tickets[draw];
         happen=true;

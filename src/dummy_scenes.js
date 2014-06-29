@@ -31,6 +31,16 @@ function load_dummy_scenes(){
         {"target": "table_choice"}
       ]
     },
+    { "type": "open",
+      "priority": 2,
+      "tickets": function(character, history, timestamp){
+        if(timestamp.day() > 3){
+          return 1;
+        };
+      },
+      "id": "get_bored",
+      "text": "<p>You get bored and leave after wandering around for a few days.</p><p>You win, I guess?</p>"
+    },
     { "id": "eat_candy",
       "text": "<p>You eat some candy from the table.</p>",
       "before": [
