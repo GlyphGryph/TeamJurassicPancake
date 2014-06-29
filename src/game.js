@@ -2,10 +2,10 @@ function Game(){
   var that = this;
   var character = new Character("Jake");
   var history = new History();
-  
   var scenes;
   var state;
   var ticket_pool = {};
+  var input_enabled = true;
   real_data = confirm("Load real data?")
   if(real_data){
     scenes = load_scenes();
@@ -33,10 +33,15 @@ function Game(){
   var time = new TimeStamp(0);
   var last_time = new TimeStamp(0);
   var update_text = "";
-  var character_text = "";
 
-  this.run = function(){
+  function run(){
     update_text = build_update();
+    update_character();
+    jQuery("#description").html(update_text);
+  }
+
+  function update_character(){
+    var character_text; 
     character_text = "<span class='name'>"+character.name+"</span>";
     character_text += "<span class='health'>Health: "+character.health+"</span>";
     character_text += "<span class='anxiety'>Anx: "+character.anxiety+"</span>";
@@ -46,13 +51,25 @@ function Game(){
     character_text += "<span class='hygiene'>Hyg: "+character.hygiene+"</span>";
     character_text += "<span class='time'>Time: "+time.formatted()+"</span>";
     jQuery("#character").html(character_text);
-    jQuery("#description").html(update_text);
+    return character_text;
   }
 
-  this.pass_time = function(){
-    time.total_hours+=24;
-    character.process_conditions()
-    alert("time passing");
+  function pass_time(){
+    // Continue to run the logic of pass_time until something happens.
+    var happen = false;
+    time.total_hours += 1;
+    update_character();
+    jQuery("#description").html("<div class='phrase'>Time passes...</div>");
+    if(time.total_hours > 100){
+      happen=true;
+    }
+    if(happen){
+      run();
+      input_enabled = true;
+      return true;
+    }
+    setTimeout(pass_time, 100);
+    return false;
   }
 
   function build_update(){
@@ -65,7 +82,7 @@ function Game(){
     if(time.total_hours != last_time.total_hours){
       description += time_passed();
     }
-    last_time = time;
+    last_time.total_hours = time.total_hours;
     if(state.description){
       description = "<div class='phrase'>"+state.description+"</div>";
     }
@@ -137,14 +154,21 @@ function Game(){
     return "<div class='timestamp'>"+(time.total_hours-last_time.total_hours)+" hours later...</div>";
   }
 
+  this.start = function(){
+    run();
+  }
+  
   jQuery("#description").on("click", ".choice", function(){
-    var target_id = state.choices[jQuery(this).data("index")].target;
-    if(target_id != "open"){
-      state = happenings[target_id];
-      that.run();
-    } else {
-      that.pass_time();
-      that.run();
+    if(input_enabled){
+      input_enable = false;
+      var target_id = state.choices[jQuery(this).data("index")].target;
+      if(target_id != "open"){
+        state = happenings[target_id];
+        run();
+        input_enabled = true;
+      } else {
+        pass_time();
+      }
     }
   });
 }
