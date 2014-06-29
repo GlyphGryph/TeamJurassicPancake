@@ -17,6 +17,17 @@ function load_scenes(){
         {"text": "Work", "target": "work"},
       ],
     },
+    { "type": "chain",
+      "id": "start_work",
+      "before": [
+        {"action": "modify_attribute", "id": "progress", "value": 5},
+        {"action": "tic", "value": 1},
+      ],
+      "text": "<p>Better start working on this art thing, don't want to flop this one.</p>",
+      "choices": [
+        {"text": "Moving on...", "target": "open"},
+      ]
+    },
     // HOURLY CHOICE AND OPTIONS
     { "type": "open",
       "priority": 1,
@@ -36,7 +47,7 @@ function load_scenes(){
         {"action": "modify_attribute", "id": "progress", "value": 5},
         {"action": "tic", "value": 1},
       ],
-      "text": "You work your ass off. It's exhausting.",
+      "text": "<p>Keeping up the... Work. Exhausting, but necessary. I think.</p>",
       "choices": [
         {"text": "Moving on...", "target": "open"},
       ]
@@ -48,7 +59,7 @@ function load_scenes(){
         { "action": "tic", "value": 8 }
       ],
       "choices": [
-        {"text": "Wake up.", "target": "open"},
+        {"text": "Another sleep well done. That was nice. But now it's time to get up.", "target": "open"},
       ]
     },
     // ENDINGS
