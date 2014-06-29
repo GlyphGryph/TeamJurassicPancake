@@ -4,6 +4,8 @@ function Game(){
   var history = new History();
   
   var scenes;
+  var state;
+  var ticket_pool = {};
   real_data = confirm("Load real data?")
   if(real_data){
     scenes = load_scenes();
@@ -12,16 +14,21 @@ function Game(){
   }
   var happenings = {};
   jQuery.each(scenes, function(index, scene){
-    happenings[scene["id"]] = new Happening(scene);
+    if(scene["type"] === "chain"){
+      state = happenings["table_choice"];
+    } else if(scene["type"] === "initial"){
+      if(state){
+        throw "ERROR: Multiple initial states provided."; 
+      }
+      state = happenings[scene["id"]] = new Happening(scene);
+    } else if(scene["type"] == "open"){
+      ticket_pool[scene["id"]] = happenings[scene["id"]] = new Happening(scene);
+    }
   });
-
-  var state;
-  if(real_data){
-    state = happenings["day_1_intro"];
-  } else { 
-    state = happenings["table_choice"];
-  }
   history.add(state);
+  if(!state){
+    throw "ERROR: No initial state provided.";
+  }
 
   var time = new TimeStamp(0);
   var last_time = new TimeStamp(0);
