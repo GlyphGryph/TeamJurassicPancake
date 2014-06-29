@@ -2,10 +2,28 @@ function load_dummy_scenes(){
   return [
     { "type": "initial",
       "text": "<p>You go for a walk around the confectionary.</p>",
+      "id": "walk_around",
       "choices": [
         { "text": "Explore for a while!",
           "target": "open",
         },
+      ]
+    },
+    { "type": "open",
+      "priority": 2,
+      "tickets": function(character, history, timestamp){
+        if(history.excludes("clown")){
+          return 5;
+        }
+        return 0;
+      },
+      "id": "clown",
+      "text": "<p>Ah! A scary clown hands you a balloon! He says to be careful... this is the only one you'll get!</p>",
+      "after": [ 
+        {"action": "add_condition", "value": "balloon"},
+      ],
+      "choices": [
+        {"text": "Ugh.", "target": "open",}
       ]
     },
     { "type": "open",

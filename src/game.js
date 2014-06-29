@@ -1,10 +1,9 @@
 function Game(){
   var that = this;
   var character = new Character("Jake");
-  var history = new History();
   var scenes;
-  var state;
-  var ticket_pool = {};
+  var state_manager;
+  var ticket_pool = [];
   var input_enabled = true;
   real_data = confirm("Load real data?")
   if(real_data){
@@ -17,16 +16,16 @@ function Game(){
     var happening = new Happening(scene);
     happenings[scene["id"]] = happening;
     if(happening.type === "initial"){
-      if(state){
+      if(state_manager){
         throw "ERROR: Multiple initial states provided."; 
       }
-      state = happening;
+      state_manager = new StateManager();
+      state_manager.change_state(happening);
     } else if(happening.type == "open"){
-      ticket_pool[scene["id"]] = happening;
+      ticket_pool.push(happening);
     }
   });
-  history.add(state);
-  if(!state){
+  if(!state_manager){
     throw "ERROR: No initial state provided.";
   }
 
@@ -72,7 +71,7 @@ function Game(){
       var current_priority = 1;
       var tickets = [];
       jQuery.each(ticket_pool, function(index, happening){
-        var alloted = happening.tickets(character, history, time)
+        var alloted = happening.tickets(character, state_manager.history, time)
         if(alloted > 0){
           if(happening.priority > current_priority){
             tickets = [];
@@ -87,13 +86,13 @@ function Game(){
           }
        }   
       });
-      var max = tickets.length
+      var max = tickets.length-1
       if(current_priority === 1){
         max = 365;
       }
       var draw = getRandomInt(0,max);
       if(tickets[draw]){
-        state = tickets[draw];
+        state_manager.change_state(tickets[draw]);
         happen=true;
       }
     }
@@ -107,13 +106,13 @@ function Game(){
   }
 
   function getRandomInt(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+    return Math.floor(Math.random() * (max - min)) + min;
   }
 
   function build_update(){
     var description = ""
     // Process any effects that occur before the bulk of this Happening
-    description += handle_effects(state.before);
+    description += handle_effects(state_manager.state.before);
     // In case any of those effects changes the time, process conditions
     description += process_conditions();
 
@@ -121,31 +120,31 @@ function Game(){
       description += time_passed();
     }
     last_time.total_hours = time.total_hours;
-    if(state.description){
-      description = "<div class='phrase'>"+state.description+"</div>";
+    if(state_manager.state.description){
+      description = "<div class='phrase'>"+state_manager.state.description+"</div>";
     }
 
     //Process any effects that occue after the bulk of this happending
-    description += handle_effects(state.after);
+    description += handle_effects(state_manager.state.after);
     description += process_conditions();
 
     var target_selected = false;
-    if(state.auto){
-      jQuery.each(state.auto, function(index, auto){
+    if(state_manager.state.auto){
+      jQuery.each(state_manager.state.auto, function(index, auto){
         if(!target_selected && !auto["condition"]){
           target_selected = auto["target"];
-        } else if(!target_selected && auto["condition"](character, history, time) ) {
+        } else if(!target_selected && auto["condition"](character, state_manager.history, time) ) {
           target_selected = auto["target"];
         }
       });
     }
     if(target_selected){
-      state = happenings[target_selected];
+      state_manager.change_state(happenings[target_selected]);
       description += build_update();
     } else {
       description += "<div id='choices'>";
-      jQuery.each(state.choices, function(index, choice){
-        if(choice.condition(character, history, time)){
+      jQuery.each(state_manager.state.choices, function(index, choice){
+        if(choice.condition(character, state_manager.history, time)){
           description += "<p><div class='choice' data-index='"+index+"'></p>";
           description += choice.text;
           description += "</div>";
@@ -193,7 +192,7 @@ function Game(){
   }
 
   function process_conditions(){
-    return "";
+    return character.process_conditions();
   }
 
   function time_passed(){
@@ -207,9 +206,9 @@ function Game(){
   jQuery("#description").on("click", ".choice", function(){
     if(input_enabled){
       input_enable = false;
-      var target_id = state.choices[jQuery(this).data("index")].target;
+      var target_id = state_manager.state.choices[jQuery(this).data("index")].target;
       if(target_id != "open"){
-        state = happenings[target_id];
+        state_manager.change_state(happenings[target_id]);
         run();
         input_enabled = true;
       } else {
@@ -217,6 +216,16 @@ function Game(){
       }
     }
   });
+}
+
+function StateManager(){
+  this.state;
+  this.history = new History();
+
+  this.change_state = function(new_state){
+    this.history.add(new_state);
+    this.state = new_state;
+  }
 }
 
 function Character(name){
@@ -239,6 +248,7 @@ function Character(name){
     //}
     return "<div class='condition'>You have acquired '"+condition+"'!</div>";
   };
+
   this.process_conditions = function(){
     for (i = 0; i < this.conditions.length; i++) { 
       condition_pull = this.conditions[i];
@@ -251,9 +261,9 @@ function Character(name){
             break;
       }
     }
-    
-    
+    return "";
   };
+
   this.remove_condition = function(condition){
     var index_to_delete = this.conditions.findIndex(function(a){return a == condition});
     if(index_to_delete){
@@ -292,10 +302,16 @@ function Choice(options){
 function History(){
   this.list = [];
   this.contains = function(value){
-    return jQuery.inArray(value, list);
+    var found = false;
+    jQuery.each(this.list, function(index, element){
+      if(element.id === value){
+        found=true;
+      }
+    });
+    return found;
   };
   this.excludes = function(value){
-    return !jQuery.inArray(value, list);
+    return !this.contains(value);
   };
   this.add = function(state){
     this.list.push(state);
