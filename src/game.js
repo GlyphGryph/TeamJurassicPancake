@@ -46,7 +46,8 @@ function Game(){
 
   function update_character(){
     var character_text; 
-    character_text = "<span class='name'>"+character.name+"</span>";
+    character_text = "<div>"
+    character_text += "<span class='name'>"+character.name+"</span>";
     character_text += "<span class='health'>Health: "+character.health+"</span>";
     character_text += "<span class='anxiety'>Anx: "+character.anxiety+"</span>";
     character_text += "<span class='ambition'>Amb: "+character.ambition+"</span>";
@@ -57,6 +58,14 @@ function Game(){
     character_text += "<span class='progress'>Prg: "+character.progress+"</span>";
     character_text += "<span class='money'>$$$: "+character.money+"</span>";
     character_text += "<span class='time'>Time: "+time.formatted()+"</span>";
+    character_text += "</div>";
+    if(character.conditions.length > 0){
+      character_text += "<div><span class='conditions'>Conditions: "
+      jQuery.each(character.conditions, function(index, condition){
+        character_text += condition + "  ";
+      });
+      character_text += "</span></div>";
+    }
     jQuery("#character").html(character_text);
     return character_text;
   }
