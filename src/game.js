@@ -14,15 +14,15 @@ function Game(){
   }
   var happenings = {};
   jQuery.each(scenes, function(index, scene){
-    if(scene["type"] === "chain"){
-      state = happenings["table_choice"];
-    } else if(scene["type"] === "initial"){
+    var happening = new Happening(scene);
+    happenings[scene["id"]] = happening;
+    if(happening.type === "initial"){
       if(state){
         throw "ERROR: Multiple initial states provided."; 
       }
-      state = happenings[scene["id"]] = new Happening(scene);
-    } else if(scene["type"] == "open"){
-      ticket_pool[scene["id"]] = happenings[scene["id"]] = new Happening(scene);
+      state = happening;
+    } else if(happening.type == "open"){
+      ticket_pool[scene["id"]] = happening;
     }
   });
   history.add(state);
@@ -64,18 +64,30 @@ function Game(){
       var current_priority = 1;
       var tickets = [];
       jQuery.each(ticket_pool, function(index, happening){
-        if(happening.tickets(character, history, time) > 0){
+        var alloted = happening.tickets(character, history, time)
+        if(alloted > 0){
           if(happening.priority > current_priority){
             tickets = [];
             current_priority = happening.priority;
-            tickets.push(happening);
+            for (var i=0; i<alloted; ++i ){
+              tickets.push(happening);
+            }
           } else if(happening.priority === current_priority){
-            tickets.push(happening);
+            for (var i=0; i<alloted; ++i ){
+              tickets.push(happening);
+            }
           }
        }   
       });
-      state = tickets[0];
-      happen=true;
+      var max = tickets.length
+      if(current_priority === 1){
+        max = 365;
+      }
+      var draw = getRandomInt(1,max);
+      if(tickets[draw]){
+        state = tickets[draw];
+        happen=true;
+      }
     }
     if(happen){
       run();
@@ -84,6 +96,10 @@ function Game(){
     }
     setTimeout(pass_time, 100);
     return false;
+  }
+
+  function getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
   function build_update(){
@@ -245,6 +261,7 @@ function Happening(scene){
   this.before = scene["before"] || [];
   this.after = scene["after"] || [];
   this.auto = scene["auto"] || null;
+  this.id = scene["id"];
 }
 
 function Choice(options){

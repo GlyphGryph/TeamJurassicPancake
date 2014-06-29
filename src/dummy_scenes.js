@@ -11,7 +11,7 @@ function load_dummy_scenes(){
     { "type": "open",
       "priority": 1,
       "tickets": function(character, history, timestamp){
-        return 1;
+        return 100;
       },
       "id": "bird_poop",
       "text": "<p>A bird poops on you.</p>",
@@ -19,6 +19,16 @@ function load_dummy_scenes(){
         { "text": "Ugh.",
           "target": "open",
         },
+      ]
+    },
+    { "type": "open",
+      "priority": 1,
+      "tickets": function(character, history, timestamp){
+        return 264;
+      },
+      "id": "find_table",
+      "auto": [
+        {"target": "table_choice"}
       ]
     },
     { "id": "eat_candy",
@@ -43,13 +53,16 @@ function load_dummy_scenes(){
       ],
     },
     { "id": "table_choice",
-      "text": "<p>There's several types of candy at this table! What do?",
+      "text": "<p>There's several types of candy at this table! What do?</p>",
       "choices": [
         { "text": "Eat a blue one!",
           "target": "eat_candy",
         },
         { "text": "Eat a red one!",
           "target": "eat_candy",
+        },
+        { "text": "Explore for a while!",
+          "target": "open",
         },
       ],
     },
