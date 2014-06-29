@@ -49,7 +49,7 @@ function load_dummy_scenes(){
       ],
       "auto": [
         { "target": "candy_sick",
-          "condition": function(character){
+          "condition": function(character, history, timestamp){
             if(character.health < -60){
               return true;
             } else {
@@ -67,9 +67,33 @@ function load_dummy_scenes(){
       "choices": [
         { "text": "Eat a blue one!",
           "target": "eat_candy",
+          "condition": function(character, history, timestamp){
+            if(character.health >= -30){
+              return true;
+            } else {
+              return false;
+            }
+          }
         },
         { "text": "Eat a red one!",
           "target": "eat_candy",
+          "condition": function(character, history, timestamp){
+            if(character.health >= -30){
+              return true;
+            } else {
+              return false;
+            }
+          }
+        },
+        { "text": "Ugh... I don't feel so good, but... eat another one...?",
+          "target": "eat_candy",
+          "condition": function(character, history, timestamp){
+            if(character.health < -30){
+              return true;
+            } else {
+              return false;
+            }
+          }
         },
         { "text": "Explore for a while!",
           "target": "open",

@@ -84,7 +84,6 @@ function Game(){
         max = 365;
       }
       var draw = getRandomInt(0,max);
-      debugger;
       if(tickets[draw]){
         state = tickets[draw];
         happen=true;
@@ -127,7 +126,7 @@ function Game(){
       jQuery.each(state.auto, function(index, auto){
         if(!target_selected && !auto["condition"]){
           target_selected = auto["target"];
-        } else if(!target_selected && auto["condition"](character) ) {
+        } else if(!target_selected && auto["condition"](character, history, time) ) {
           target_selected = auto["target"];
         }
       });
@@ -138,9 +137,11 @@ function Game(){
     } else {
       description += "<div id='choices'>";
       jQuery.each(state.choices, function(index, choice){
-        description += "<p><div class='choice' data-index='"+index+"'></p>";
-        description += choice.text;
-        description += "</div>";
+        if(choice.condition(character, history, time)){
+          description += "<p><div class='choice' data-index='"+index+"'></p>";
+          description += choice.text;
+          description += "</div>";
+        }
       });
       description += "</div>";
     }
@@ -268,6 +269,7 @@ function Happening(scene){
 function Choice(options){
   this.text = options["text"];
   this.target = options["target"];
+  this.condition = options["condition"] || function(){return true;};
 }
 
 function History(){
