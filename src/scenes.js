@@ -45,14 +45,20 @@ function load_scenes(){
           }
           else false;
         }},
+        {"text": "Okay, let's grab something to eat...", "target": "eat", "condition": function(character, history, time){
+          if(character.get_attribute("hunger") > 12){
+            return true;
+          }
+          else false;
+        }},
       ],
     },
     { "type": "chain",
       "id": "work",
       "before": [
-        {"action": "progress"},
-        {"action": "modify_attribute", "id": "fatigue", "value": 4 },
-        {"action": "tic", "value": 1},
+        { "action": "progress"},
+        { "action": "modify_attribute", "id": "fatigue", "value": 4 },
+        { "action": "tic", "value": 1},
       ],
       "text": "<p>Keeping up the... Work. Exhausting, but necessary. I think.</p>",
       "choices": [
@@ -64,10 +70,22 @@ function load_scenes(){
       "text": "<p>zZzZzZzZz...</p>",
       "after": [
         { "action": "tic", "value": 8 },
-        {"action": "modify_attribute", "id": "fatigue", "value": -64 },
+        { "action": "modify_attribute", "id": "fatigue", "value": -64 },
       ],
       "choices": [
         {"text": "Another sleep well done. That was nice. But now it's time to get up.", "target": "open"},
+      ]
+    },
+    { "type": "chain",
+      "id": "eat",
+      "text": "<p>I sit down for a nice, relaxing meal.</p>",
+      "after": [
+        { "action": "tic", "value": 1 },
+        { "action": "modify_attribute", "id": "fatigue", "value": 2 },
+        { "action": "modify_attribute", "id": "hunger", "value": -40 },
+      ],
+      "choices": [
+        {"text": "All done!", "target": "open"},
       ]
     },
     // RANDOM EVENTS - These event chains get mixed in with the regular decisions
