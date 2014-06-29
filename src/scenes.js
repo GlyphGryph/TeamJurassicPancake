@@ -39,6 +39,7 @@ function load_scenes(){
       "text": "What do?",
       "choices": [
         {"text": "Work", "target": "work"},
+        {"text": "Browse internet", "target": "browse_internet"},
         {"text": "Ok, enough work for now. Time to sleep.", "target": "sleep", "condition": function(character, history, time){
           if(character.get_attribute("fatigue") > 24){
             return true;
@@ -46,11 +47,18 @@ function load_scenes(){
           else false;
         }},
         {"text": "Okay, let's grab something to eat...", "target": "eat", "condition": function(character, history, time){
-          if(character.get_attribute("hunger") > 12){
+          if(character.get_attribute("hunger") > 12 && character.get_attribute("food supply") > 0){
             return true;
           }
           else false;
         }},
+        {"text": "Coffee time, I think.", "target": "make_coffee", "condition": function(character, history, time){
+          if(character.get_attribute("coffee supply") > 0){
+            return true;
+          }
+          else false;
+        }},
+        {"text": "Go to the store for supplies", "target": "store_hub"},
       ],
     },
     { "type": "chain",
@@ -61,6 +69,17 @@ function load_scenes(){
         { "action": "tic", "value": 1},
       ],
       "text": "<p>Keeping up the... Work. Exhausting, but necessary. I think.</p>",
+      "choices": [
+        {"text": "Moving on...", "target": "open"},
+      ]
+    },
+    { "type": "chain",
+      "id": "browse_internet",
+      "before": [
+        { "action": "modify_attribute", "id": "fatigue", "value": 2 },
+        { "action": "tic", "value": 1},
+      ],
+      "text": "<p>Need a break. Time to look at cats on the internet.</p>",
       "choices": [
         {"text": "Moving on...", "target": "open"},
       ]
@@ -83,12 +102,167 @@ function load_scenes(){
         { "action": "tic", "value": 1 },
         { "action": "modify_attribute", "id": "fatigue", "value": 2 },
         { "action": "modify_attribute", "id": "hunger", "value": -40 },
+        { "action": "modify_attribute", "id": "food supply", "value": -10 },
       ],
       "choices": [
         {"text": "All done!", "target": "open"},
       ]
     },
+    { "type": "chain",
+      "id": "make_coffee",
+      "before": [
+        { "action": "progress"},
+        { "action": "modify_attribute", "id": "fatigue", "value": -15 },
+        { "action": "modify_attribute", "id": "coffee supply", "value": -10 },
+        { "action": "tic", "value": 1},
+      ],
+      "text": "<p>Keeping up the... Work. Exhausting, but necessary. I think.</p>",
+      "choices": [
+        {"text": "Moving on...", "target": "open"},
+      ]
+    },
+    { "type": "chain",
+      "id": "store_hub",
+      "before": [
+        { "action": "modify_attribute", "id": "fatigue", "value": 4 },
+        { "action": "tic", "value": 1},
+      ],
+      "text": "<p>I go to the store to pick up some supplies.</p>",
+      "choices": [
+        {"text": "Buy some food and stuff.", "target": "store_food", "condition": function(character, history, time){
+          if(character.get_attribute("money") > 29){
+            return true;
+          }
+          else false;
+        }},
+        {"text": "Buy coffee!", "target": "store_coffee", "condition": function(character, history, time){
+          if(character.get_attribute("money") > 9){
+            return true;
+          }
+          else false;
+        }},
+        {"text": "Okay, time to go home.", "target": "ride_home"},
+      ]
+    },
+    { "type": "chain",
+      "id": "store_food",
+      "before": [
+        { "action": "modify_attribute", "id": "money", "value": -30 },
+        { "action": "modify_attribute", "id": "food supply", "value": 10 },
+        { "action": "tic", "value": 0},
+      ],
+      "text": "<p>Some food in the basket. Look at that money go.</p>",
+      "choices": [
+        {"text": "Buy some food and stuff.", "target": "store_food", "condition": function(character, history, time){
+          if(character.get_attribute("money") > 29){
+            return true;
+          }
+          else false;
+        }},
+        {"text": "Buy coffee!", "target": "store_coffee", "condition": function(character, history, time){
+          if(character.get_attribute("money") > 9){
+            return true;
+          }
+          else false;
+        }},
+        {"text": "Okay, time to go home.", "target": "ride_home"},
+      ]
+    },
+    { "type": "chain",
+      "id": "store_coffee",
+      "before": [
+        { "action": "modify_attribute", "id": "money", "value": -10 },
+        { "action": "modify_attribute", "id": "coffee supply", "value": 10 },
+      ],
+      "text": "<p>Look at that coffee in the basket. Look at it. Freaking glorious right there.</p>",
+      "choices": [
+        {"text": "Buy some food and stuff.", "target": "store_food", "condition": function(character, history, time){
+          if(character.get_attribute("money") > 29){
+            return true;
+          }
+          else false;
+        }},
+        {"text": "Buy coffee!", "target": "store_coffee", "condition": function(character, history, time){
+          if(character.get_attribute("money") > 9){
+            return true;
+          }
+          else false;
+        }},
+        {"text": "Okay, time to go home.", "target": "ride_home"},
+      ]
+    },
+    { "type": "chain",
+      "id": "ride_home",
+      "before": [
+        { "action": "tic", "value": 1},
+      ],
+      "text": "<p>Alright, it's time to get back on the road home. Gotta catch a bus.</p>",
+      "choices": [
+        {"text": "Wait. Am I too close to that bus?", "target": "bus_hit", "condition": function(character, history, time){
+          if(character.get_attribute("fatigue") >= 74){
+            return true;
+          }
+          else false;
+        }},
+        {"text": "Let's roll.", "target": "open", "condition": function(character, history, time){
+          if(character.get_attribute("fatigue") < 74){
+            return true;
+          }
+          else false;
+        }},
+      ]
+    },
+    { "type": "chain",
+      "id": "bus_hit",
+      "text": "<p>Oops. Welp. That WAS a bus getting too close. I just took a bad hit . . .</p>",
+      "auto": [
+        {"target": "game_over"}
+      ]
+    },
+    
+    
+    
+    
     // RANDOM EVENTS - These event chains get mixed in with the regular decisions
+    { "type": "open",
+      "priority": 1,
+      "tickets": function(character, history, time){
+        if(character.get_attribute("fatigue") >= 40){
+          return 1;
+        } else {
+          return 0;
+        }
+      },
+      "id": "whoa_a_spider",
+      "text": "<p>Did that ... did that big spider just go behind my computer? Oh God. What do I do?</p>",
+      "auto": [
+        {"text": "I should HUNT this spider before it hunts me.", "target": "hunt_spider"},
+        {"text": "Whatever.", "target": "ignore_spider"},
+      ],
+    },
+    { "type": "chain",
+      "id": "hunt_spider",
+      "text": "<p>SMASH. One less pest around here. Wait, how long did that take? At least I'm a little less tired now . . .</p>",
+      "before": [
+        { "action": "tic", "value": 2 },
+        {"action": "modify_attribute", "id": "fatigue", "value": -8 },
+      ],
+      "choices": [
+        {"text": "Back to work, I think.", "target": "open"},
+      ]
+    },
+    { "type": "chain",
+      "id": "ignore_spider",
+      "text": "<p>It can wait. Ugh, I've lost time.</p>",
+      "before": [
+        { "action": "tic", "value": 1 },
+        {"action": "modify_attribute", "id": "fatigue", "value": -8 }, // it's a bit harder to sleep with a spider in the room.
+      ],
+      "choices": [
+        {"text": "Not the most comfortable sleep I've ever had, but, I'm awake now.", "target": "open"},
+      ]
+    },
+    
     // OVERRIDES - These are event chains that happen with priorities, such as falling asleep from being exhausted
     { "type": "open",
       "priority": 3,
@@ -116,6 +290,8 @@ function load_scenes(){
         {"text": "Not the most comfortable sleep I've ever had, but, I'm awake now.", "target": "open"},
       ]
     },
+    
+    
     // ENDINGS
     { "type": "open",
       "priority": 5,
