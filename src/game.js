@@ -37,7 +37,12 @@ function Game(){
   function run(){
     update_text = build_update();
     update_character();
-    jQuery("#description").html(update_text);
+    update_description(update_text);
+  }
+  
+  function update_description(update_text){
+    var description = jQuery("#description");
+    description.html(update_text);
   }
 
   function update_character(){
@@ -62,7 +67,7 @@ function Game(){
     var happen = false;
     time.total_hours += 1;
     update_character();
-    jQuery("#description").html("<div class='phrase'>Time passes...</div>");
+    update_description("<div class='phrase'>Time passes...</div>");
     if(time.total_hours%24 === 8){
       var current_priority = 1;
       var tickets = [];
