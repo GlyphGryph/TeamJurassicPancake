@@ -63,7 +63,6 @@ function Game(){
   function pass_time(){
     // Continue to run the logic of pass_time until something happens.
     var happen = false;
-    time.total_hours += 1;
     update_character();
     update_description("<div class='phrase'>Time passes...</div>");
     if(time.total_hours%update_frequency === 0){
@@ -97,6 +96,7 @@ function Game(){
       input_enabled = true;
       return true;
     }
+    time.total_hours += 1;
     setTimeout(pass_time, 100);
     return false;
   }
@@ -111,7 +111,6 @@ function Game(){
     description += handle_effects(state_manager.state.before);
     // In case any of those effects changes the time, process conditions
     description += process_conditions();
-
     if(time.total_hours != last_time.total_hours){
       description += time_passed();
     }
@@ -163,7 +162,7 @@ function Game(){
         display += character.remove_condition(effect.value);
       } else if(effect.action == "modify_attribute"){
         character.modify_attribute(effect.id, effect.value);
-      } else if(effect.action == "tics"){
+      } else if(effect.action == "tic"){
         time.total_hours+=effect.value;
       }
       

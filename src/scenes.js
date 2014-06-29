@@ -27,27 +27,28 @@ function load_scenes(){
       "text": "What do?",
       "choices": [
         {"text": "Work", "target": "work"},
-        {"text": "Sleep", "target": "sleep"},
+        {"text": "Ok, enough work for now. Time to sleep.", "target": "sleep"},
       ],
     },
     { "type": "chain",
       "id": "work",
-      "text": "You work your ass off. It's exhausting.",
-      "after": [
+      "before": [
         {"action": "modify_attribute", "id": "progress", "value": 5},
+        {"action": "tic", "value": 1},
       ],
+      "text": "You work your ass off. It's exhausting.",
       "choices": [
         {"text": "Moving on...", "target": "open"},
       ]
     },
     { "type": "chain",
       "id": "sleep",
-      "text": "You sleep your ass off. It's invigorating.",
+      "text": "<p>zZzZzZzZz...</p>",
       "after": [
-        { "action": "tics", "value": 8 }
+        { "action": "tic", "value": 8 }
       ],
       "choices": [
-        {"text": "Moving on...", "target": "open"},
+        {"text": "Wake up.", "target": "open"},
       ]
     },
     // ENDINGS
