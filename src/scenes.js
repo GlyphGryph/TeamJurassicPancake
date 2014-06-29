@@ -188,9 +188,9 @@ function load_scenes(){
 	
 	
 	{ "type": "open",
-      "priority": 1,
+      "priority": 50,
       "tickets": function(character, history, timestamp){
-        return 40;
+		if time.day() == 14 {return 10;}
       },
       "id": "store_event_a",
       "text": "<p>I'm out of toilet paper, so I have to get out of bed and buy some. Might as well get some food while I'm at it.</p> <p>At the store now, vaguely resembling a human being. Been wondering if maybe I should pick some other things up. Budget's a bit tight, but there's still things to choose from, I think.</p>",
