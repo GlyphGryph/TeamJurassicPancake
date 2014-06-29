@@ -112,6 +112,7 @@ function Game(){
     // In case any of those effects changes the time, process conditions
     description += process_conditions();
     if(time.total_hours !== last_time.total_hours){
+      character.hunger(time.total_hours - last_time.total_hours);
       description += time_passed();
     }
     last_time.total_hours = time.total_hours;
@@ -298,7 +299,6 @@ function Character(name){
     }
   };
 
-
   this.progress = function(value){
     if(this.get_focus() <= 10){
       modifier=0;
@@ -315,6 +315,10 @@ function Character(name){
     }
     this.modify_attribute("progress", modifier);
     return modifier;
+  };
+
+  this.hunger = function(time){
+    this.modify_attribute("hunger", time*6);
   }
 }
 

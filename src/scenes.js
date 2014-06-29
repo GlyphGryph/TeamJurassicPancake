@@ -39,7 +39,12 @@ function load_scenes(){
       "text": "What do?",
       "choices": [
         {"text": "Work", "target": "work"},
-        {"text": "Ok, enough work for now. Time to sleep.", "target": "sleep"},
+        {"text": "Ok, enough work for now. Time to sleep.", "target": "sleep", "condition": function(character, history, time){
+          if(character.get_attribute("fatigue") > 24){
+            return true;
+          }
+          else false;
+        }},
       ],
     },
     { "type": "chain",
