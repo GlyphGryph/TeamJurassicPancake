@@ -89,6 +89,127 @@ function load_scenes(){
       ]
     },
     // RANDOM EVENTS - These event chains get mixed in with the regular decisions
+    { "type": "open",
+      "priority": 1,
+      "tickets": function(character, history, time){
+        if(time.hour() > 7 && time.hour() < 18 && history.excludes("first_ring")){
+          return 1;   
+        }
+        return 0;
+      },
+      "id": "first_ring",
+      "text": "<p>The phone is ringing...</p>",
+      "choices": [
+        {"text": "Answer it.", "target": "answer_phone_1"},
+        {"text": "Turn off the damned thing - I need to focus!", "target": "unplug_phone"},
+        {"text": "Just let it ring - if it's important, they'll call back later.", "target": "ignore_phone"},
+      ]
+    },
+    { "type": "chain",
+      "id": "ignore_phone",
+      "text": "<p>You ignore it, and eventually it stops ringing.</p>",
+      "auto": [
+        {"target": "the_choice"},
+      ],
+    },
+    { "type": "chain",
+      "id": "unplug_phone",
+      "text": "<p>You turn off the phone, and the ringing stops. Ah, silence. Now you can finally get some work done!</p>",
+      "auto": [
+        {"target": "the_choice"},
+      ],
+    },
+    { "type": "chain",
+      "id": "answer_phone_1",
+      "text": "<p>It's your mother. She's in the neighbourhood, and wants to know if she can stop by to visit. It's been too long since she last got to see you - you're always so busy!</p>",
+      "choices": [
+        { "text": "Sorry, mom. I'm busy this weekend.", "target": "phone_rejection"},
+        { "text": "Sure, mom. I can always spare some time for you.", "target": "phone_accept"},
+      ]
+    },
+    { "type": "chain",
+      "id": "phone_rejection",
+      "text": "<p>You tell her that you're really busy and on a tight schedule, and now's not a good time. You have to go. She sounds really disappointed, but she let's you go, and says to give her a call back whenever you find some free time. She misses hearing the sound of your voice.</p>",
+      "auto": [
+        {"target": "the_choice"},
+      ],
+    },
+    { "type": "chain",
+      "id": "phone_accept",
+      "text": "<p>She says she'll head right over then, and she remains on the phone for the entire trip. Eventually, she says she's at your front door, and you let her in. You spend some time chatting about this and then, and then notice the time. She doesn't seem like she's planning on leaving anytime soon, though...</p>",
+      "after": [
+        {"action": "modify_attribute", "id": "fatigue", "value": 4 },
+        {"action": "tic", "value": 1},
+      ],
+      "choices": [
+        { "text": "Enjoy this opportunity, since you don't get to see her often", "target": "visit_mom"},
+        { "text": "Explain that you've got an important project you've got to get back to", "target": "kick_out_mom"},
+      ]
+    },
+    { "type": "chain",
+      "id": "kick_out_mom",
+      "text": "<p>You tell her it's been nice seeing her, but you've really got to get back to work. She gives you a hug, and says she understands, although she looks crestfallen, and asks you not to be such a stranger before heading out.</p>",
+      "auto": [
+        {"target": "the_choice"},
+      ],    
+    },
+    { "type": "chain",
+      "id": "visit_mom",
+      "text": "<p>She asks how things are going, and tells you about her health problems and the argument she's been in with some relatives, and how much she hates her new neighbors and how they keep calling the cops whenever she lights things on fire in the backyard, but the joke's on them because she's always got a bag of hot dogs to pull and claim she's cooking, so she doesn't even have to put it out. She says you look too skinny, and you need to eat more and exercise more, and what happened to that pretty girl you were seeing?</p><p>You explain that you broke up months ago and, yes, you probably should eat better. She responds by offering to make you dinner, and before you can stop her she has your cupboards open and is aghast at how bare they are! She asks where all your food is.</p>",
+      "after": [
+        {"action": "modify_attribute", "id": "fatigue", "value": 4 },
+        {"action": "tic", "value": 1},
+      ],
+      "choices": [
+        { "text": "Admit you've been busy and really low on funds, you can't afford to buy much more right now.", "target": "visit_mom_2"},
+      ]
+    },
+    { "type": "chain",
+      "id": "visit_mom_2",
+      "text": "<p>She finally realizes that you would be working if you aren't here, and apologizes for taking up so much of her time. She gives you a hundred dollar bill, pushing it into your hand before you can put together the words to refuse it, before taking her leave. She says she'll be by again sometime soon, and if you need any more money just let her know! She doesn't want her baby to starve, but for now she'll leave and let you get back to work. The door shuts behind her shortly afterwards, and you're left alone in the house once more. It was, to be honest, an enjoyable enough visit, and at least you've got enough money now to eat for the rest of the week...</p>",
+      "after": [
+        {"action": "modify_attribute", "id": "cash", "value": 100},
+      ],
+      "auto": [
+        {"target": "the_choice"},
+      ],    
+    },
+    // These events occur if your phone rang previously, but you failed to answer it
+    { "type": "open",
+      "priority": 1,
+      "tickets": function(character, history, time){
+        if(history.contains("ignore_phone") && history.excludes("answer_phone_2") && history.excludes("unplug_phone")){
+          return 2;
+        } else {
+          return 0;
+        }
+      },
+      "text": "<p>The phone is ringing again...</p>",
+      "choices": [
+        {"text": "Answer it.", "target": "answer_phone_2"},
+        {"text": "Turn off the damned thing - I need to focus!", "target": "unplug_phone"},
+        {"text": "Just let it ring - if it's important, they'll call back later.", "target": "ignore_phone"},
+      ]
+    },
+    { "type": "chain",
+      "id": "answer_phone_2",
+      "text": "Its your mother. She says she's home now, but she had been in the area and wanted to visit. You must have been out when she called. She wanted to visit - it's been forever since she's seen you. She wants to know how you've been and what's been going on in your life.",
+      "choices": [
+        { "text": "Let her know you don't have time to talk", "target": "phone_rejection"},
+        { "text": "Chat with her for a little while", "target": "phone_conversation"},
+      ]
+    },
+    { "type": "chain",
+      "id": "phone_conversation",
+      "text": "<p>The phone call drags on and on. It's enjoyable enough, but you're constantly being nagged by the voice that says you should be working, and it really HAS been too long since you last talked - that's part of why it takes so long. There's a lot to catch up on! Eventually, though, you tell her you have to go, and she says that maybe she will get a chance to talk with you in person after you're done with your current project - she'd be happy to come up and visit once you have some free time. You think you'd like that.</p>",
+      "after": [
+        {"action": "modify_attribute", "id": "fatigue", "value": 4 },
+        {"action": "tic", "value": 1},
+      ],
+      "auto": [
+        {"target": "the_choice"},
+      ],
+    },
     // OVERRIDES - These are event chains that happen with priorities, such as falling asleep from being exhausted
     { "type": "open",
       "priority": 3,
@@ -99,7 +220,7 @@ function load_scenes(){
           return 0;
         }
       },
-      "id": "the_choice",
+      "id": "too_tired",
       "text": "What... huh... ugh... can't focus... so... zzzzZZZzzzZZzzzz",
       "auto": [
         {"target": "force_sleep"},
@@ -116,7 +237,7 @@ function load_scenes(){
         {"text": "Not the most comfortable sleep I've ever had, but, I'm awake now.", "target": "open"},
       ]
     },
-    // ENDINGS
+   // ENDINGS
     { "type": "open",
       "priority": 5,
       "tickets": function(character, history, time){
