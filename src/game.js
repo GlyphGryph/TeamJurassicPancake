@@ -52,7 +52,7 @@ function Game(){
     if(character.conditions.length > 0){
       character_text += "<div><span class='conditions'>Conditions: "
       jQuery.each(character.conditions, function(index, condition){
-        character_text += condition + "  ";
+        character_text += condition.name + "  ";
       });
       character_text += "</span></div>";
     }
@@ -248,6 +248,10 @@ function Character(name){
     } else {
       fatigue_penalty = 0;
     }
+    if (this.has_condition("caffeinated") && fatigue_penalty > 0 ) {
+      fatigue_penalty = fatigue_penalty / 3;
+    }
+    
     var focus = 100 - fatigue_penalty - (this.get_attribute("hunger")/2);
     return focus;
   }
@@ -258,7 +262,7 @@ function Character(name){
     //if (condition == "melancholic spirit") {
     //  this.willpower -= 1;
     //}
-    return "<div class='condition'>You have acquired '"+condition+"'!</div>";
+    return "<div class='condition'>You have acquired '"+condition.name+"'!</div>";
   };
 
   this.modify_attribute = function(id, value){
@@ -293,13 +297,23 @@ function Character(name){
   };
 
   this.remove_condition = function(condition){
-    var index_to_delete = this.conditions.findIndex(function(a){return a == condition});
+    var index_to_delete = this.conditions.findIndex(function(a){return a == condition.name});
     if(index_to_delete){
       this.conditions = this.conditions.slice(0,index_to_delete).concat(this.conditions.slice(index_to_delete+1))
-      return "<div class='condition'>You are no longer suffering from '"+condition+"'!</div>";
+      return "<div class='condition'>You are no longer suffering from '"+condition.name+"'!</div>";
     } else {
-      return "<div class='error'>ERROR: Attempted to remove condition ["+condition+"] that does not exist!</div>";
+      return "<div class='error'>ERROR: Attempted to remove condition ["+condition.name+"] that does not exist!</div>";
     }
+  };
+  this.has_condition = function(condition){
+    var index_to_check = this.conditions.findIndex(function(a){return a.name == condition});
+    if(index_to_check){
+      return true;
+    } else {
+      return false;
+    }
+    
+    
   };
 
   this.progress = function(value){
@@ -322,6 +336,17 @@ function Character(name){
 
   this.hunger = function(time){
     this.modify_attribute("hunger", time*6);
+    // now kill conditions
+    removing_these = [];
+    for (i = 0; i < this.conditions.length; i++) { 
+        this.conditions[i].lifespan -= 1;
+        if (this.conditions[i].lifespan < 0) {
+            removing_these.push(i);
+        }
+    }
+    for (i = this.conditions.length - 1; i > -1; i--) { 
+        this.conditions.slice(0,removing_these[i]).concat(this.conditions.slice(removing_these[i]+1))
+    }
   }
 }
 
@@ -391,4 +416,9 @@ function TimeStamp(hours){
 
     return stamp;
   }
-}
+};
+
+function Condition(name, lifespan){
+  this.name = name;
+  this.life_span = lifespan; // this automatically gives it a total_hours expiry time that can be checked against
+};
