@@ -303,7 +303,7 @@ function load_scenes(){
       "id": "visit_mom_2",
       "text": "<p>She finally realizes that you would be working if you aren't here, and apologizes for taking up so much of her time. She gives you a hundred dollar bill, pushing it into your hand before you can put together the words to refuse it, before taking her leave. She says she'll be by again sometime soon, and if you need any more money just let her know! She doesn't want her baby to starve, but for now she'll leave and let you get back to work. The door shuts behind her shortly afterwards, and you're left alone in the house once more. It was, to be honest, an enjoyable enough visit, and at least you've got enough money now to eat for the rest of the week...</p>",
       "after": [
-        {"action": "modify_attribute", "id": "cash", "value": 100},
+        {"action": "modify_attribute", "id": "money", "value": 100},
       ],
       "auto": [
         {"target": "the_choice"},
@@ -348,7 +348,7 @@ function load_scenes(){
     { "type": "open",
       "priority": 1,
       "tickets": function(character, history, time){
-        if(character.get_attribute("fatigue") >= 40){
+        if(character.get_attribute("fatigue") >= 40 && history.excludes("who_a_spider"){
           return 1;
         } else {
           return 0;
