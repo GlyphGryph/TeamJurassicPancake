@@ -349,7 +349,7 @@ function load_scenes(){
     { "type": "open",
       "priority": 1,
       "tickets": function(character, history, time){
-        if(character.get_attribute("fatigue") >= 40 && history.excludes("who_a_spider"){
+        if(character.get_attribute("fatigue") >= 40 && history.excludes("who_a_spider")){
           return 1;
         } else {
           return 0;
