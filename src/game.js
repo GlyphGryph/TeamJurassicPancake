@@ -52,7 +52,7 @@ function Game(){
     if(character.conditions.length > 0){
       character_text += "<div><span class='conditions'>Conditions: "
       jQuery.each(character.conditions, function(index, condition){
-        character_text += condition.name + "  ";
+        character_text += condition.id + "  ";
       });
       character_text += "</span></div>";
     }
@@ -158,7 +158,7 @@ function Game(){
         throw("Error: Effect has no action defined.");
       }
       if(effect.action == "add_condition"){
-        display += character.add_condition(effect.value);
+        display += character.add_condition(effect.id, effect.lifespan || 0);
       } else if(effect.action == "remove_condition"){
         display += character.remove_condition(effect.value);
       } else if(effect.action == "progress"){
@@ -257,12 +257,9 @@ function Character(name){
   }
 
 
-  this.add_condition = function(condition){
-    this.conditions.push(condition);
-    //if (condition == "melancholic spirit") {
-    //  this.willpower -= 1;
-    //}
-    return "<div class='condition'>You have acquired '"+condition.name+"'!</div>";
+  this.add_condition = function(id, lifespan){
+    this.conditions.push({"id": id, "lifespan": lifespan, "alive": 0});
+    return "<div class='condition'>You have acquired '"+id+"'!</div>";
   };
 
   this.modify_attribute = function(id, value){
@@ -281,23 +278,8 @@ function Character(name){
     }
   }
 
-  this.process_conditions = function(){
-    for (i = 0; i < this.conditions.length; i++) { 
-      condition_pull = this.conditions[i];
-      switch (condition_pull) {
-        case "melancholic spirit":
-            this.willpower -= 1;
-            break;
-        
-        default:
-            break;
-      }
-    }
-    return "";
-  };
-
   this.remove_condition = function(condition){
-    var index_to_delete = this.conditions.findIndex(function(a){return a == condition.name});
+    var index_to_delete = this.conditions.findIndex(function(a){return a == condition.id});
     if(index_to_delete){
       this.conditions = this.conditions.slice(0,index_to_delete).concat(this.conditions.slice(index_to_delete+1))
       return "<div class='condition'>You are no longer suffering from '"+condition.name+"'!</div>";
@@ -305,6 +287,27 @@ function Character(name){
       return "<div class='error'>ERROR: Attempted to remove condition ["+condition.name+"] that does not exist!</div>";
     }
   };
+
+  this.process_conditions = function(){
+    that = this;
+    description = "";
+    conditions_to_remove = [];
+    jQuery.each(this.conditions, function(index, condition){
+      condition.alive += 1;
+      // If this item
+      if(condition.lifespan > 0 && condition.alive >= condition.lifespan) {
+        conditions_to_remove.push(index);
+        if(condition.id == "caffeinated"){
+          description += "<div class='condition'>The caffeine jolt has worn off...</div>";
+        }
+      }
+    });
+    jQuery.each(conditions_to_remove, function(index, condition){
+      that.remove_condition(condition);
+    });
+    return description;
+  };
+
   this.has_condition = function(condition){
     var index_to_check = this.conditions.findIndex(function(a){return a.name == condition});
     if(index_to_check){
@@ -312,8 +315,6 @@ function Character(name){
     } else {
       return false;
     }
-    
-    
   };
 
   this.progress = function(value){
@@ -334,19 +335,8 @@ function Character(name){
     return modifier;
   };
 
-  this.hunger = function(time){
-    this.modify_attribute("hunger", time*6);
-    // now kill conditions
-    removing_these = [];
-    for (i = 0; i < this.conditions.length; i++) { 
-        this.conditions[i].lifespan -= 1;
-        if (this.conditions[i].lifespan < 0) {
-            removing_these.push(i);
-        }
-    }
-    for (i = this.conditions.length - 1; i > -1; i--) { 
-        this.conditions.slice(0,removing_these[i]).concat(this.conditions.slice(removing_these[i]+1))
-    }
+  this.hunger = function(amount){
+    this.modify_attribute("hunger", amount);
   }
 }
 

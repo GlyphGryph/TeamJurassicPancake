@@ -114,7 +114,7 @@ function load_scenes(){
         { "action": "progress"},
         { "action": "modify_attribute", "id": "fatigue", "value": -15 },
         { "action": "modify_attribute", "id": "coffee supply", "value": -10 },
-        { "action": "add_condition", "value": Condition("caffeinated", 4), },
+        { "action": "add_condition", "id": "caffeinated", "lifespan": 4, },
         { "action": "tic", "value": 1},
       ],
       "text": "<p>Keeping up the... Work. Exhausting, but necessary. I think.</p>",
