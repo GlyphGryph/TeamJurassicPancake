@@ -47,13 +47,13 @@ function load_scenes(){
           else false;
         }},
         {"text": "Okay, let's grab something to eat...", "target": "eat", "condition": function(character, history, time){
-          if(character.get_attribute("hunger") > 12 && character.get_attribute("food supply") > 0){
+          if(character.get_attribute("hunger") > 12 && character.get_attribute("food_supply") > 0){
             return true;
           }
           else false;
         }},
         {"text": "Coffee time, I think.", "target": "make_coffee", "condition": function(character, history, time){
-          if(character.get_attribute("coffee supply") > 0){
+          if(character.get_attribute("coffee_supply") > 0){
             return true;
           }
           else false;
@@ -102,7 +102,7 @@ function load_scenes(){
         { "action": "tic", "value": 1 },
         { "action": "modify_attribute", "id": "fatigue", "value": 2 },
         { "action": "modify_attribute", "id": "hunger", "value": -40 },
-        { "action": "modify_attribute", "id": "food supply", "value": -10 },
+        { "action": "modify_attribute", "id": "food_supply", "value": -1 },
       ],
       "choices": [
         {"text": "All done!", "target": "open"},
@@ -113,7 +113,7 @@ function load_scenes(){
       "before": [
         { "action": "progress"},
         { "action": "modify_attribute", "id": "fatigue", "value": -15 },
-        { "action": "modify_attribute", "id": "coffee supply", "value": -10 },
+        { "action": "modify_attribute", "id": "coffee_supply", "value": -1 },
         { "action": "add_condition", "id": "caffeinated", "lifespan": 4, },
         { "action": "tic", "value": 1},
       ],
@@ -130,13 +130,13 @@ function load_scenes(){
       ],
       "text": "<p>I go to the store to pick up some supplies.</p>",
       "choices": [
-        {"text": "Buy some food and stuff.", "target": "store_food", "condition": function(character, history, time){
+        {"text": "Buy some food and stuff. (Cost: 30)", "target": "store_food", "condition": function(character, history, time){
           if(character.get_attribute("money") > 29){
             return true;
           }
           else false;
         }},
-        {"text": "Buy coffee!", "target": "store_coffee", "condition": function(character, history, time){
+        {"text": "Buy coffee! (Cost: 10)", "target": "store_coffee", "condition": function(character, history, time){
           if(character.get_attribute("money") > 9){
             return true;
           }
@@ -149,18 +149,18 @@ function load_scenes(){
       "id": "store_food",
       "before": [
         { "action": "modify_attribute", "id": "money", "value": -30 },
-        { "action": "modify_attribute", "id": "food supply", "value": 10 },
+        { "action": "modify_attribute", "id": "food_supply", "value": 1 },
         { "action": "tic", "value": 0},
       ],
       "text": "<p>Some food in the basket. Look at that money go.</p>",
       "choices": [
-        {"text": "Buy some food and stuff.", "target": "store_food", "condition": function(character, history, time){
+        {"text": "Buy some food and stuff. (Cost: 30)", "target": "store_food", "condition": function(character, history, time){
           if(character.get_attribute("money") > 29){
             return true;
           }
           else false;
         }},
-        {"text": "Buy coffee!", "target": "store_coffee", "condition": function(character, history, time){
+        {"text": "Buy coffee!(Cost: 10)", "target": "store_coffee", "condition": function(character, history, time){
           if(character.get_attribute("money") > 9){
             return true;
           }
@@ -173,17 +173,17 @@ function load_scenes(){
       "id": "store_coffee",
       "before": [
         { "action": "modify_attribute", "id": "money", "value": -10 },
-        { "action": "modify_attribute", "id": "coffee supply", "value": 10 },
+        { "action": "modify_attribute", "id": "coffee_supply", "value": 1 },
       ],
       "text": "<p>Look at that coffee in the basket. Look at it. Freaking glorious right there.</p>",
       "choices": [
-        {"text": "Buy some food and stuff.", "target": "store_food", "condition": function(character, history, time){
+        {"text": "Buy some food and stuff. (Cost: 30)", "target": "store_food", "condition": function(character, history, time){
           if(character.get_attribute("money") > 29){
             return true;
           }
           else false;
         }},
-        {"text": "Buy coffee!", "target": "store_coffee", "condition": function(character, history, time){
+        {"text": "Buy coffee! (Cost: 10)", "target": "store_coffee", "condition": function(character, history, time){
           if(character.get_attribute("money") > 9){
             return true;
           }

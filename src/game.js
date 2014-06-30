@@ -220,8 +220,8 @@ function Character(name){
     {"id": "progress", "label": "Progress", "value": 0, "min": 0},
     {"id": "fatigue", "label": "Fatigue", "value": 40, "min": 0},
     {"id": "hunger", "label": "Hunger", "value": 20, "min": 0},
-    {"id": "coffee supply", "label": "Coffee Supply", "value": 20, "min": 0},
-    {"id": "food supply", "label": "Food Supply", "value": 40, "min": 0},
+    {"id": "coffee_supply", "label": "Coffee Supply", "value": 2, "min": 0},
+    {"id": "food_supply", "label": "Food Supply", "value": 4, "min": 0},
     {"id": "money", "label": "Money", "value": 60, "min": 0},
   ]
   this.conditions = [];
