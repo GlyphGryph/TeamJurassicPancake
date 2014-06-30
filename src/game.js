@@ -279,7 +279,7 @@ function Character(name){
   }
 
   this.remove_condition = function(condition){
-    var index_to_delete = this.conditions.findIndex(function(a){return a == condition.id});
+    var index_to_delete = this.conditions.findIndex(function(a){return a.id == condition.id});
     if(index_to_delete){
       this.conditions = this.conditions.slice(0,index_to_delete).concat(this.conditions.slice(index_to_delete+1))
       return "<div class='condition'>You are no longer suffering from '"+condition.name+"'!</div>";
@@ -309,7 +309,7 @@ function Character(name){
   };
 
   this.has_condition = function(condition){
-    var index_to_check = this.conditions.findIndex(function(a){return a.name == condition});
+    var index_to_check = this.conditions.findIndex(function(a){return a.id == condition});
     if(index_to_check){
       return true;
     } else {
